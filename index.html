@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>grit:lab graphs</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="static/favicon.svg" sizes="any" type="image/svg+xml">
+</head>
+
+<body>
+
+    <header id="header">
+        <div id="user-info">
+            <span id="username-display"></span>
+            <button id="logout-button">Logout</button>
+        </div>
+    </header>
+
+    <form id="login-section">
+        <h2>Login</h2>
+        <input type="text" name="useremail" id="username-or-email" placeholder="Username or E-mail" autocomplete="username">
+        <input type="password" name="password" id="password-login" placeholder="Password" autocomplete="current-password">
+        <button type="submit" id="login-button">Login</button>
+        <p id="errorMessageLogin"></p>
+    </form>
+    
+    <script type="module" src="main.js"></script>
+
+</body>
+
+</html>
