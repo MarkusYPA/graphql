@@ -73,7 +73,7 @@ function updateUI() {
     }
 }
 
-async function runQuery(queryArg) {
+async function runQuery(queryArgs, usrId) {
     const token = localStorage.getItem("jwt");
 
     const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {
@@ -83,7 +83,7 @@ async function runQuery(queryArg) {
             "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-            query: queryArg
+            query: queryArgs[0] + usrId + queryArgs[1]
         })
     });
 
@@ -96,12 +96,8 @@ async function runQuery(queryArg) {
     return data.data;
 }
 
-async function fillUserInfo(){
-    const usrId = getUserIdFromJWT();
-    let data
-
-    data = await runQuery(me);
-    console.log(data[Object.keys(data)[0]]['0']);
+async function getUserData(usrId) {
+    const data = await runQuery(me, usrId);
     let person = data[Object.keys(data)[0]]['0']
 
     let totalXP = 0
@@ -114,7 +110,27 @@ async function fillUserInfo(){
         }
     });
 
-    console.log("total xp:", totalXP)
+    delete person.xps;
+    person.totalXP = totalXP;
+    return person
+}
+
+async function fillUserInfo() {
+    let person = await getUserData(getUserIdFromJWT());
+    console.log(person);
+
+    const infoBox = document.getElementById('user-info');
+
+    const row1 = document.createElement('span');
+    const row2 = document.createElement('span');
+    const row3 = document.createElement('span');
+    row1.textContent = person.firstName + ' ' + person.lastName;
+    row2.textContent = person.id + ' ' + person.login;
+    row3.textContent = person.totalXP + ' ' + 'XP';
+
+    infoBox.appendChild(row1);
+    infoBox.appendChild(row2);
+    infoBox.appendChild(row3);
 }
 
 
@@ -131,12 +147,6 @@ function setColumnHeights(grow) {
 
 async function start() {
     fillUserInfo();
-
-    /*     data = await runQuery(transactions2);
-        console.log(data[Object.keys(data)[0]]);
-    
-        data = await runQuery(introspection);
-        console.log(data[Object.keys(data)[0]]); */
 }
 
 addEventListener("DOMContentLoaded", function () {

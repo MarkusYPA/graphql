@@ -11,9 +11,9 @@ export const introspection = `
   }
 }`
 
-export const me = `
+export const me = [`
 {
-  user(where: {id: {_eq: 2587}}) {
+  user(where: {id: {_eq: `, ` }}) {
     id
     firstName
     lastName
@@ -27,14 +27,14 @@ export const me = `
       path
     }
   }
-}`
+}`]
 
-export const transactions1 = `
+export const transactions1 = [`
 {
   transaction(
     where: {
       _and: [
-        { userId: { _eq: 2587 } },
+        { userId: { _eq: `, ` } },
         { type: { _eq: "xp" } }
       ]
     }
@@ -45,14 +45,14 @@ export const transactions1 = `
     type
     path
   }
-}`
+}`]
 
-export const transactions2 = `
+export const transactions2 = [`
 {
   transaction(
     where: {
       _and: [
-        { userId: { _eq: 2587 } },
+        { userId: { _eq: `, ` } },
         { type: { _eq: "xp" } }
       ]
     }
@@ -60,14 +60,14 @@ export const transactions2 = `
   ) {
     amount
   }
-}`
+}`]
 
-export const transaction_aggregate= `
+export const transaction_aggregate = [`
 {
   transaction_aggregate(
     where: {
       _and: [
-        { userId: { _eq: 2587 } },
+        { userId: { _eq: `, ` } },
         { type: { _eq: "xp" } }
       ]
     }
@@ -78,4 +78,4 @@ export const transaction_aggregate= `
       }
     }
   }
-}`
+}`]
