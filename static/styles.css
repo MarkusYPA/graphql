@@ -1,12 +1,38 @@
+
+/* Pseudo-class for variables */
+:root {
+    --bg1: #2b4f4e;
+    --bg2: #222;
+    --text1: white;
+    --text2: #cb0000;
+    --btn1: #c77e00;
+    --btn2: darkred;
+}
+
 body {
-    background-color: rgb(36, 77, 84);
+    background-color: var(--bg1);
     color: white;
+    margin: 3rem 0 0 0; /* Push content down so it's not under the header */
+}
 
-    margin-top: 50px; /* Push content down so it's not under the header */
+#login-colums{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
 
+.column {
+    background-color: var(--bg2);
+    width: 10vw;
+
+    overflow: hidden;
+    transition: height 1s ease-in-out; 
 }
 
 #login-section {
+    position: absolute;
+    top: 35vh;
+    left: 40vw;
     display:flex;
     flex-direction: column;
     align-items: flex-start;
@@ -14,14 +40,16 @@ body {
 }
 
 #errorMessageLogin {
-    color: rgb(255, 0, 0);
+    color: var(--text2);
 }
 
-
-
 header {
-    display: none; /* Initially hidden */
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
     width: 100%;
+    height: 3rem;
     background: #222;
     color: white;
     box-sizing: border-box;
