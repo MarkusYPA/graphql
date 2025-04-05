@@ -13,27 +13,33 @@ async function logIn(e) {
     const password = e.target.password.value;
     const credentials = btoa(`${nameOrEmail}:${password}`); //encode string in base-64
 
-    const response = await fetch("https://01.gritlab.ax/api/auth/signin", {
-        method: "POST",
-        headers: {
-            "Authorization": `Basic ${credentials}`,
-            "Content-Type": "application/json"
+    try {
+        const response = await fetch("https://01.gritlab.ax/api/auth/signin", {
+            method: "POST",
+            headers: {
+                "Authorization": `Basic ${credentials}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem("jwt", data);  // Store JWT for future requests
+            localStorage.setItem("username", nameOrEmail); // Store username for display
+            loginErrorMessage.textContent = '';
+            console.log("Login successful");
+            setColumnHeights(false);
+            updateUI();
+        } else {
+            console.error("Login failed:", data.error);
+            loginErrorMessage.textContent = data.error;
         }
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        localStorage.setItem("jwt", data);  // Store JWT for future requests
-        localStorage.setItem("username", nameOrEmail); // Store username for display
-        loginErrorMessage.textContent = '';
-        console.log("Login successful");
-        setColumnHeights(false);
-        updateUI();
-    } else {
-        console.log("Non ok response", data);
-        console.error("Login failed:", data.error);
-        loginErrorMessage.textContent = data.error;
+    } catch (error) {
+        // This catches a Cross-Origin Resource Sharing (CORS)/network error
+        // Server allows loads only form its own origin
+        console.error("Login request failed:", error);
+        loginErrorMessage.textContent = "Login not allowed from this location";
     }
 }
 
