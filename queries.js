@@ -59,7 +59,7 @@ export const xpFromTransactionQuery = [`
 {
   transaction(
     where: {_and: [{userId: {_eq: `, `}}, {type: {_eq: "xp"}}]}
-    order_by: {createdAt: desc}
+    order_by: {createdAt: asc}
   ) {
     amount
     createdAt

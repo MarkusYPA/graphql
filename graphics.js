@@ -1,5 +1,27 @@
-import { getDoneAuditData, getReceivedAuditData, getUserData, getUserIdFromJWT } from "./data.js";
+import { getDoneAuditData, getGraphData, getReceivedAuditData, getUserData, getUserIdFromJWT } from "./data.js";
 import { dataContainer, numberOfColumns } from "./main.js";
+
+
+export function setColumnHeights(grow) {
+    const colContainer = document.querySelector('#login-columns');
+    const oldColumns = Array.from(document.getElementsByClassName('column'));
+
+    let height = '0vh'
+    for (let i = 0; i < numberOfColumns; i++) {
+        if (grow) height = (Math.random() * 15 + 60) + 'vh';
+
+        let col;
+        if (oldColumns.length != numberOfColumns) {
+            col = document.createElement('div');
+            col.classList.add('column');
+            col.style.width = `${100 / numberOfColumns}vw`;
+            col.style.height = height;
+            colContainer.appendChild(col);
+        } else {
+            oldColumns[i].style.height = height;
+        }
+    }
+}
 
 export async function fillUserInfo() {
     const userId = getUserIdFromJWT();
@@ -68,27 +90,134 @@ export async function fillUserInfo() {
     personInfoContainer.appendChild(personalInfo);
     infoBox.appendChild(personInfoContainer);
 
-    dataContainer.appendChild(infoBox);
+    dataContainer.prepend(infoBox);
 }
 
+export async function drawGraph() {
+    const userId = getUserIdFromJWT();
+    const graphData = await getGraphData(userId);
 
-export function setColumnHeights(grow) {
-    const colContainer = document.querySelector('#login-columns');
-    const oldColumns = Array.from(document.getElementsByClassName('column'));
+    //const svgWidth = dataContainer.clientWidth || 800;
+    const padding = 40;
+    const leftPadding = 80; // more room for y label
+    const svgWidth = 800;
+    const svgHeight = 400; // keep a fixed height for now
 
-    let height = '0vh'
-    for (let i = 0; i < numberOfColumns; i++) {
-        if (grow) height = (Math.random() * 15 + 60) + 'vh';
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.id = 'chart';
+    svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet"); // optional but helpful
+    svg.style.width = "100%";
+    svg.style.height = "auto";
 
-        let col;
-        if (oldColumns.length != numberOfColumns) {
-            col = document.createElement('div');
-            col.classList.add('column');
-            col.style.width = `${100 / numberOfColumns}vw`;
-            col.style.height = height;
-            colContainer.appendChild(col);
-        } else {
-            oldColumns[i].style.height = height;
-        }
+    const times = graphData.map(d => d.awarded);
+    const amountsSeparate = graphData.map(d => d.amount);
+    const amountsAcc = amountsSeparate.map((_, i) => amountsSeparate.slice(0, i + 1).reduce((sum, curr) => sum + curr));
+
+    const minTime = Math.min(...times);
+    const maxTime = Math.max(...times);
+    const minAmount = 0;
+    const maxAmount = Math.max(...amountsAcc);
+
+    const xScale = time =>
+        leftPadding + ((time - minTime) / (maxTime - minTime)) * (svgWidth - leftPadding - padding);
+
+    const yScale = amount =>
+        svgHeight - padding - ((amount - minAmount) / (maxAmount - minAmount)) * (svgHeight - 2 * padding);
+
+
+    let points = [];
+    for (let i = 0; i < graphData.length; i++) {
+        const x = xScale(times[i]);
+        const y = yScale(amountsAcc[i]);
+        points.push(`${x},${y}`);
     }
+
+    const pathData = "M " + points.join(" L ");
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.classList.add("chart-line");
+    path.setAttribute("d", pathData);
+    svg.appendChild(path);
+
+    const numTicks = 5;
+    const xTickValues = [];
+    const yTickValues = [];
+
+    for (let i = 0; i <= numTicks; i++) {
+        const t = minTime + ((maxTime - minTime) / numTicks) * i;
+        xTickValues.push(new Date(t));
+
+        const a = minAmount + ((maxAmount - minAmount) / numTicks) * i;
+        yTickValues.push(a);
+    }
+
+    // X-axis ticks & labels
+    xTickValues.forEach(date => {
+        const x = xScale(date.getTime());
+
+        // Tick line
+        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        tick.setAttribute("x1", x);
+        tick.setAttribute("y1", svgHeight - padding);
+        tick.setAttribute("x2", x);
+        tick.setAttribute("y2", svgHeight - padding + 5);
+        tick.setAttribute("stroke", "black");
+        svg.appendChild(tick);
+
+        // Label
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", x);
+        label.setAttribute("y", svgHeight - padding + 20);
+        label.setAttribute("text-anchor", "middle");
+        label.classList.add("tick-label");
+        label.textContent = date.toLocaleDateString("sv-SE"); // or "en-GB", etc.
+        svg.appendChild(label);
+    });
+
+    // Y-axis ticks & labels
+    yTickValues.forEach(amount => {
+        const y = yScale(amount);
+
+        // Tick line
+        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        tick.setAttribute("x1", leftPadding - 5);
+        tick.setAttribute("y1", y);
+        tick.setAttribute("x2", leftPadding);
+        tick.setAttribute("y2", y);
+        tick.setAttribute("stroke", "black");
+        svg.appendChild(tick);
+
+        // Label
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", leftPadding - 10);
+        label.setAttribute("y", y + 4);
+        label.setAttribute("text-anchor", "end");
+        label.classList.add("tick-label");
+        label.textContent = amount.toLocaleString(); // e.g. 1,000
+        svg.appendChild(label);
+    });
+
+
+    // X-axis label
+    const xAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    xAxisLabel.setAttribute("x", svgWidth / 2);
+    xAxisLabel.setAttribute("y", svgHeight - 5);
+    xAxisLabel.setAttribute("text-anchor", "middle");
+    xAxisLabel.classList.add("axis-label");
+    xAxisLabel.textContent = "Date";
+    svg.appendChild(xAxisLabel);
+
+    // Y-axis label
+    const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    yAxisLabel.setAttribute("x", 15);
+    yAxisLabel.setAttribute("y", svgHeight / 2);
+    yAxisLabel.setAttribute("text-anchor", "middle");
+    yAxisLabel.classList.add("axis-label");
+    yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
+    yAxisLabel.textContent = "Experience Points";
+    svg.appendChild(yAxisLabel);
+
+
+    dataContainer.appendChild(svg);
 }

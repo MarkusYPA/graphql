@@ -1,4 +1,4 @@
-import { fillUserInfo, setColumnHeights } from "./graphics.js";
+import { drawGraph, fillUserInfo, setColumnHeights } from "./graphics.js";
 
 let loginErrorMessage;
 export let contentErrorMessage;
@@ -73,6 +73,7 @@ function updateUI() {
 
 async function start() {
     fillUserInfo();
+    drawGraph();
 }
 
 addEventListener("DOMContentLoaded", function () {

@@ -1,5 +1,5 @@
 import { contentErrorMessage } from "./main.js";
-import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, userInfoQuery } from "./queries.js";
+import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
 
 export function getUserIdFromJWT() {
     const token = localStorage.getItem("jwt");
@@ -80,4 +80,21 @@ export async function getReceivedAuditData(usrId) {
 
     const auditsReceived = allAuditData.reduce((sum, count) => sum + count, 0);
     return auditsReceived;
+}
+
+export async function getGraphData(usrId) {
+    const data = await runQuery(xpFromTransactionQuery, usrId);
+    console.log(Array.isArray(data.transaction));
+
+    const xp = [];
+    data.transaction.forEach(ta => {
+        if (
+            (!ta.path.includes('piscine-go') && !ta.path.includes('piscine-js')) ||
+            ta.path.endsWith('piscine-js')
+        ) {
+            const time = new Date(ta.createdAt).getTime()
+            xp.push({'amount': ta.amount, 'awarded': time})
+        }
+    });
+    return xp;
 }
