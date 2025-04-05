@@ -1,6 +1,7 @@
-import { introspection, me, transactions2 } from "./queries.js";
+import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, introspectionQuery, transactions2, userInfoQuery } from "./queries.js";
 
 let loginErrorMessage
+let contentErrorMessage
 let loginSection
 let usernameDisplay
 let logoutButton
@@ -59,6 +60,7 @@ function getUserIdFromJWT() {
 }
 
 function updateUI() {
+    contentErrorMessage.textContent = '';
     const token = localStorage.getItem("jwt");
     const username = localStorage.getItem("username");
 
@@ -77,51 +79,92 @@ function updateUI() {
     }
 }
 
-async function runQuery(queryArgs, usrId) {
+async function runQuery(queryArgs, id) {
     const token = localStorage.getItem("jwt");
 
-    const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            query: queryArgs[0] + usrId + queryArgs[1]
-        })
-    });
+    try {
+        const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                query: queryArgs[0] + id + queryArgs[1]
+            })
+        });
 
-    const data = await res.json();
-    if (data.errors) {
-        console.log(data.errors[0].message);
-        return;
+        const data = await res.json();
+        if (data.errors) {
+            console.error("Error parsing response:", data.errors[0].message);
+            contentErrorMessage.textContent = data.errors[0].message;
+            return;
+        }
+        contentErrorMessage.textContent = '';
+        return data.data;
+
+    } catch (error) {
+        console.error("Data request failed:", error);
+        contentErrorMessage.textContent = error;
     }
-
-    return data.data;
 }
 
 async function getUserData(usrId) {
-    const data = await runQuery(me, usrId);
-    let person = data[Object.keys(data)[0]]['0']
+    const data = await runQuery(userInfoQuery, usrId);
+    let person = data[Object.keys(data)[0]]['0'];
 
-    let totalXP = 0
+    person.totalXP = 0
     person.xps.forEach(xp => {
         if (
             (!xp.path.includes('piscine-go') && !xp.path.includes('piscine-js')) ||
             xp.path.endsWith('piscine-js')
         ) {
-            totalXP += xp.amount;
+            person.totalXP += xp.amount;
         }
     });
-
     delete person.xps;
-    person.totalXP = totalXP;
+
     return person
 }
 
+async function getDoneAuditData(usrId) {
+    const data = await runQuery(auditsDoneQuery, usrId);
+    const auditsDone = data[Object.keys(data)[0]];
+    //console.log("audits:", audits)
+    return auditsDone.length
+}
+
+async function getReceivedAuditData(usrId) {
+    const data = await runQuery(groupIdsQuery, usrId);
+    //let groupIds = Object.values(data[Object.keys(data)[0]]).map(v => v.groupId); // get array of user's group ids
+    let groups = Object.values(data[Object.keys(data)[0]]).map(v => v); // get array of user's groups
+
+    // await for all to resolve with Promise.all (forEach => await will not work) 
+    const allAuditData = await Promise.all(
+        //groupIds.map(async (id) => {
+        groups.map(async (group) => {
+            const data = await runQuery(auditsForGroupQuery, group.groupId);
+            const theseAudits = data[Object.keys(data)[0]];   // array of audit ids for this group
+            // audits in piscines can be filtered out by path here, if necessary.
+            return theseAudits.length;
+        })
+    );
+
+    const auditsReceived = allAuditData.reduce((sum, count) => sum + count, 0);
+    console.log("Audits received:", auditsReceived);
+
+    return auditsReceived;
+}
+
+
 async function fillUserInfo() {
-    let person = await getUserData(getUserIdFromJWT());
-    console.log(person);
+    const userId = getUserIdFromJWT();
+    const person = await getUserData(userId);
+    const personDoneAudits = await getDoneAuditData(userId);
+    const personReceivedAudits = await getReceivedAuditData(userId);
+    
+    console.log(personDoneAudits, personReceivedAudits);
+
 
     const infoBox = document.createElement('div');
     infoBox.id = 'user-info';
@@ -129,13 +172,18 @@ async function fillUserInfo() {
     const row1 = document.createElement('span');
     const row2 = document.createElement('span');
     const row3 = document.createElement('span');
+    const row4 = document.createElement('span');
+
     row1.textContent = person.firstName + ' ' + person.lastName;
     row2.textContent = person.id + ' ' + person.login;
-    row3.textContent = person.totalXP + ' ' + 'XP';
+    row3.textContent = person.totalXP + ' XP';
+    row4.textContent = personDoneAudits + ' Audits done, ' + personReceivedAudits + ' Audits received';
 
     infoBox.appendChild(row1);
     infoBox.appendChild(row2);
     infoBox.appendChild(row3);
+    infoBox.appendChild(row4);
+
     dataContainer.appendChild(infoBox);
 }
 
@@ -149,7 +197,7 @@ function createColumns(oldColumns, numberOfColumns) {
         if (oldColumns.length != numberOfColumns) {
             col = document.createElement('div');
             col.classList.add('column');
-            col.style.width = `${100/numberOfColumns}vw`;
+            col.style.width = `${100 / numberOfColumns}vw`;
             col.style.height = height;
             colContainer.appendChild(col);
         } else {
@@ -173,11 +221,12 @@ async function start() {
 }
 
 addEventListener("DOMContentLoaded", function () {
-    loginErrorMessage = document.getElementById("errorMessageLogin");
+    loginErrorMessage = document.getElementById("login-error-message");
     loginSection = document.getElementById('login-section')
     usernameDisplay = document.getElementById("username-display");
     logoutButton = document.getElementById("logout-button");
     dataContainer = document.getElementById("data-container");
+    contentErrorMessage = this.document.getElementById('content-error-message');
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);

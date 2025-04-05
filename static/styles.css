@@ -1,8 +1,9 @@
 
 /* Pseudo-class for variables */
 :root {
-    --bg1: #2b4f4e;
-    --bg2: #222;
+    --bg1: #aceae8;
+    --bg2: #949494;
+    --bg3: #ffadf0;
     --text1: white;
     --text2: #cb0000;
     --btn1: #c77e00;
@@ -43,7 +44,8 @@ body {
     gap: 1rem;
 }
 
-#errorMessageLogin {
+#login-error-message,
+#content-error-message {
     color: var(--text2);
 }
 
@@ -54,7 +56,7 @@ header {
     align-items: center;
     width: 100%;
     height: 3rem;
-    background: #222;
+    background: var(--bg2);
     color: white;
     box-sizing: border-box;
     padding: 10px 20px;
@@ -71,7 +73,7 @@ header {
 }
 
 #logout-button {
-    background: rgb(175, 105, 0);
+    background: var(--btn1);
     color: white;
     border: none;
     padding: 5px 10px;
@@ -80,7 +82,7 @@ header {
 }
 
 #logout-button:hover {
-    background: darkred;
+    background: var(--btn2);
 }
 
 #user-info {
@@ -88,5 +90,14 @@ header {
     flex-direction: column;
     align-items: start;
     gap: 10px;
-    margin: 10rem;
+    margin: 5rem;
+    padding: 2rem;
+
+    border-style: solid;
+    border-width: 2rem;
+    border-radius: 2rem;
+    border-color: white;
+
+    color: black;
+    background-color: var(--bg3);
 }

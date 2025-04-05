@@ -1,17 +1,4 @@
-export const introspection = `
-{
-  __schema {
-    types {
-      name
-      kind
-      fields {
-        name
-      }
-    }
-  }
-}`
-
-export const me = [`
+export const userInfoQuery = [`
 {
   user(where: {id: {_eq: `, ` }}) {
     id
@@ -29,53 +16,92 @@ export const me = [`
   }
 }`]
 
-export const transactions1 = [`
+
+export const auditsDoneQuery = [`
 {
-  transaction(
-    where: {
-      _and: [
-        { userId: { _eq: `, ` } },
-        { type: { _eq: "xp" } }
-      ]
-    }
-    order_by: { createdAt: desc }
-  ) {
-    amount
-    createdAt
-    type
+  audit(where: {_and: [{auditorId: {_eq: `, `}}, {auditedAt: {_is_null: false}}]}) {
+    id
+  }
+}`]
+
+export const groupIdsQuery = [`
+{
+  group_user(where: {userId: {_eq: `, `}}) {
+    groupId
     path
   }
 }`]
 
-export const transactions2 = [`
+export const auditsForGroupQuery = [`
 {
-  transaction(
-    where: {
-      _and: [
-        { userId: { _eq: `, ` } },
-        { type: { _eq: "xp" } }
-      ]
-    }
-    order_by: { createdAt: desc }
-  ) {
-    amount
+  audit(where: {_and: [{groupId: {_eq: `, `}}, {auditedAt: {_is_null: false}}]}) {
+    id
   }
 }`]
 
+
+export const introspectionQuery = `
+{
+  __schema {
+    types {
+            name
+            kind
+      fields {
+                name
+            }
+        }
+    }
+} `
+
+
+
+export const transactions1 = [`
+{
+    transaction(
+        where: {
+        _and: [
+            { userId: { _eq: `, ` } },
+            { type: { _eq: "xp" } }
+        ]
+    }
+    order_by: { createdAt: desc }
+    ) {
+        amount
+        createdAt
+        type
+        path
+    }
+} `]
+
+export const transactions2 = [`
+{
+    transaction(
+        where: {
+        _and: [
+            { userId: { _eq: `, ` } },
+            { type: { _eq: "xp" } }
+        ]
+    }
+    order_by: { createdAt: desc }
+    ) {
+        amount
+    }
+} `]
+
 export const transaction_aggregate = [`
 {
-  transaction_aggregate(
-    where: {
-      _and: [
-        { userId: { _eq: `, ` } },
-        { type: { _eq: "xp" } }
-      ]
+    transaction_aggregate(
+        where: {
+        _and: [
+            { userId: { _eq: `, ` } },
+            { type: { _eq: "xp" } }
+        ]
     }
-  ) {
+    ) {
     aggregate {
       sum {
-        amount
-      }
+                amount
+            }
+        }
     }
-  }
-}`]
+} `]
