@@ -162,27 +162,67 @@ async function fillUserInfo() {
     const person = await getUserData(userId);
     const personDoneAudits = await getDoneAuditData(userId);
     const personReceivedAudits = await getReceivedAuditData(userId);
-    
-    console.log(personDoneAudits, personReceivedAudits);
-
 
     const infoBox = document.createElement('div');
     infoBox.id = 'user-info';
 
-    const row1 = document.createElement('span');
-    const row2 = document.createElement('span');
-    const row3 = document.createElement('span');
-    const row4 = document.createElement('span');
+    // container for personal info and audits
+    const personInfoContainer = document.createElement('div');
+    const personalInfo = document.createElement('div');
+    personInfoContainer.id = 'person-info-container';
+    personInfoContainer.classList.add('key-value-title');
+    personalInfo.id = 'personal-info';
+    personalInfo.classList.add('key-value-info');
 
-    row1.textContent = person.firstName + ' ' + person.lastName;
-    row2.textContent = person.id + ' ' + person.login;
-    row3.textContent = person.totalXP + ' XP';
-    row4.textContent = personDoneAudits + ' Audits done, ' + personReceivedAudits + ' Audits received';
+    const titleRow = document.createElement('span');
+    const row2key1 = document.createElement('span');
+    const row2val1 = document.createElement('span');
+    const row3key1 = document.createElement('span');
+    const row3val1 = document.createElement('span');
+    const row4key1 = document.createElement('span');
+    const row4val1 = document.createElement('span');
 
-    infoBox.appendChild(row1);
-    infoBox.appendChild(row2);
-    infoBox.appendChild(row3);
-    infoBox.appendChild(row4);
+    titleRow.textContent = person.firstName + ' ' + person.lastName;
+    row2key1.textContent = 'id number:';
+    row2val1.textContent = person.id;
+    row3key1.textContent = 'username:';
+    row3val1.textContent = person.login;
+    row4key1.textContent = 'experience points:';
+    row4val1.textContent = person.totalXP;
+
+    const row2key2 = document.createElement('span');
+    const row2val2 = document.createElement('span');
+    const row3key2 = document.createElement('span');
+    const row3val2 = document.createElement('span');
+    const row4key2 = document.createElement('span');
+    const row4val2 = document.createElement('span');
+
+    row2key2.textContent = 'audits done:';
+    row2val2.textContent = personDoneAudits;
+    row3key2.textContent = 'audits received:';
+    row3val2.textContent = personReceivedAudits;
+    row4key2.textContent = 'audits ratio:';
+    row4val2.textContent = Math.round(person.auditRatio * 1000) / 1000;
+
+    personInfoContainer.appendChild(titleRow);
+
+    personalInfo.appendChild(row2key1);
+    personalInfo.appendChild(row2val1);
+    personalInfo.appendChild(row2key2);
+    personalInfo.appendChild(row2val2);
+
+    personalInfo.appendChild(row3key1);
+    personalInfo.appendChild(row3val1);
+    personalInfo.appendChild(row3key2);
+    personalInfo.appendChild(row3val2);
+
+    personalInfo.appendChild(row4key1);
+    personalInfo.appendChild(row4val1);
+    personalInfo.appendChild(row4key2);
+    personalInfo.appendChild(row4val2);
+
+    personInfoContainer.appendChild(personalInfo);
+    infoBox.appendChild(personInfoContainer);
 
     dataContainer.appendChild(infoBox);
 }
