@@ -55,23 +55,17 @@ export const introspectionQuery = `
 
 
 
-export const transactions1 = [`
+export const xpFromTransactionQuery = [`
 {
-    transaction(
-        where: {
-        _and: [
-            { userId: { _eq: `, ` } },
-            { type: { _eq: "xp" } }
-        ]
-    }
-    order_by: { createdAt: desc }
-    ) {
-        amount
-        createdAt
-        type
-        path
-    }
-} `]
+  transaction(
+    where: {_and: [{userId: {_eq: `, `}}, {type: {_eq: "xp"}}]}
+    order_by: {createdAt: desc}
+  ) {
+    amount
+    createdAt
+    path
+  }
+}`]
 
 export const transactions2 = [`
 {
