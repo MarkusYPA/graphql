@@ -4,8 +4,7 @@ let loginErrorMessage
 let loginSection
 let usernameDisplay
 let logoutButton
-
-const columnHeights = ['55vh', '60vh', '52vh', '65vh', '57vh', '60vh', '64vh', '57vh', '54vh', '60vh'];
+let dataContainer
 
 async function logIn(e) {
     e.preventDefault(); // don't reload at submit form
@@ -56,8 +55,6 @@ function getUserIdFromJWT() {
 
     // jwt parts separated by dots: 0 header, 1 payload, 2 signature - Decode payload:
     const payload = JSON.parse(atob(token.split(".")[1]));
-    //console.log("payload:", payload)
-
     return payload.sub; // return x-hasura-user-id from payload
 }
 
@@ -74,7 +71,8 @@ function updateUI() {
     } else {
         usernameDisplay.textContent = '';
         logoutButton.hidden = true;
-        loginSection.style.display = "flex";
+        loginSection.style.display = 'flex';
+        dataContainer.innerHTML = '';
         setColumnHeights(true);
     }
 }
@@ -125,7 +123,8 @@ async function fillUserInfo() {
     let person = await getUserData(getUserIdFromJWT());
     console.log(person);
 
-    const infoBox = document.getElementById('user-info');
+    const infoBox = document.createElement('div');
+    infoBox.id = 'user-info';
 
     const row1 = document.createElement('span');
     const row2 = document.createElement('span');
@@ -137,17 +136,35 @@ async function fillUserInfo() {
     infoBox.appendChild(row1);
     infoBox.appendChild(row2);
     infoBox.appendChild(row3);
+    dataContainer.appendChild(infoBox);
+}
+
+function createColumns(oldColumns, numberOfColumns) {
+    const colContainer = document.querySelector('#login-columns');
+
+    for (let i = 0; i < numberOfColumns; i++) {
+        const height = (Math.random() * 15 + 60) + 'vh';
+
+        let col;
+        if (oldColumns.length != numberOfColumns) {
+            col = document.createElement('div');
+            col.classList.add('column');
+            col.style.width = `${100/numberOfColumns}vw`;
+            col.style.height = height;
+            colContainer.appendChild(col);
+        } else {
+            oldColumns[i].style.height = height;
+        }
+    }
 }
 
 
 function setColumnHeights(grow) {
     const columns = Array.from(document.getElementsByClassName('column'));
-    for (let i = 0; i < columns.length; i++) {
-        if (grow) {
-            columns[i].style.height = columnHeights[i];
-        } else {
-            columns[i].style.height = "0vh";
-        }
+    if (grow) {
+        createColumns(columns, 20);
+    } else {
+        columns.forEach((c) => c.style.height = '0vh');
     }
 }
 
@@ -160,6 +177,7 @@ addEventListener("DOMContentLoaded", function () {
     loginSection = document.getElementById('login-section')
     usernameDisplay = document.getElementById("username-display");
     logoutButton = document.getElementById("logout-button");
+    dataContainer = document.getElementById("data-container");
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);

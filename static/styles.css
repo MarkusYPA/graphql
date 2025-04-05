@@ -9,13 +9,19 @@
     --btn2: darkred;
 }
 
+html {
+    background-color: var(--bg2);
+}
+
 body {
     background-color: var(--bg1);
     color: white;
-    margin: 3rem 0 0 0; /* Push content down so it's not under the header */
+    /* margin: 3rem 0 0 0; */ /* Push content down so it's not under the header */
+    margin: 0;
+    height: 100vh;
 }
 
-#login-colums{
+#login-columns{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -23,8 +29,6 @@ body {
 
 .column {
     background-color: var(--bg2);
-    width: 10vw;
-
     overflow: hidden;
     transition: height 1s ease-in-out; 
 }
