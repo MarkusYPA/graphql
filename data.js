@@ -84,7 +84,7 @@ export async function getReceivedAuditData(usrId) {
 
 export async function getGraphData(usrId) {
     const data = await runQuery(xpFromTransactionQuery, usrId);
-    console.log(Array.isArray(data.transaction));
+    //console.log(Array.isArray(data.transaction));
 
     const xp = [];
     data.transaction.forEach(ta => {

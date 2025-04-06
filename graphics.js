@@ -1,3 +1,4 @@
+import { roundToOneSignificantNumber } from "./calculations.js";
 import { getDoneAuditData, getGraphData, getReceivedAuditData, getUserData, getUserIdFromJWT } from "./data.js";
 import { dataContainer, numberOfColumns } from "./main.js";
 
@@ -99,7 +100,7 @@ export async function drawGraph() {
 
     //const svgWidth = dataContainer.clientWidth || 800;
     const padding = 40;
-    const leftPadding = 80; // more room for y label
+    const leftPadding = 90; // more room for y label
     const svgWidth = 800;
     const svgHeight = 400; // keep a fixed height for now
 
@@ -135,89 +136,137 @@ export async function drawGraph() {
 
     const pathData = "M " + points.join(" L ");
 
+    drawTicksAndLabels();
+
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.classList.add("chart-line");
     path.setAttribute("d", pathData);
     svg.appendChild(path);
 
-    const numTicks = 5;
-    const xTickValues = [];
-    const yTickValues = [];
-
-    for (let i = 0; i <= numTicks; i++) {
-        const t = minTime + ((maxTime - minTime) / numTicks) * i;
-        xTickValues.push(new Date(t));
-
-        const a = minAmount + ((maxAmount - minAmount) / numTicks) * i;
-        yTickValues.push(a);
-    }
-
-    // X-axis ticks & labels
-    xTickValues.forEach(date => {
-        const x = xScale(date.getTime());
-
-        // Tick line
+    for (let i = 0; i < graphData.length; i++) {
+        const x = xScale(times[i]);
+        const y = yScale(amountsAcc[i]);
+        points.push(`${x},${y}`);
+    
         const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
         tick.setAttribute("x1", x);
-        tick.setAttribute("y1", svgHeight - padding);
+        tick.setAttribute("y1", y - 6);
         tick.setAttribute("x2", x);
-        tick.setAttribute("y2", svgHeight - padding + 5);
-        tick.setAttribute("stroke", "black");
-        svg.appendChild(tick);
-
-        // Label
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", x);
-        label.setAttribute("y", svgHeight - padding + 20);
-        label.setAttribute("text-anchor", "middle");
-        label.classList.add("tick-label");
-        label.textContent = date.toLocaleDateString("sv-SE"); // or "en-GB", etc.
-        svg.appendChild(label);
-    });
-
-    // Y-axis ticks & labels
-    yTickValues.forEach(amount => {
-        const y = yScale(amount);
-
-        // Tick line
-        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        tick.setAttribute("x1", leftPadding - 5);
-        tick.setAttribute("y1", y);
-        tick.setAttribute("x2", leftPadding);
         tick.setAttribute("y2", y);
-        tick.setAttribute("stroke", "black");
+        tick.classList.add("data-tick");
         svg.appendChild(tick);
+    }
+    
+    
 
-        // Label
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", leftPadding - 10);
-        label.setAttribute("y", y + 4);
-        label.setAttribute("text-anchor", "end");
-        label.classList.add("tick-label");
-        label.textContent = amount.toLocaleString(); // e.g. 1,000
-        svg.appendChild(label);
-    });
+    // Axis lines
+    const xAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    xAxisLine.setAttribute("x1", leftPadding);
+    xAxisLine.setAttribute("y1", svgHeight - padding);
+    xAxisLine.setAttribute("x2", svgWidth - padding);
+    xAxisLine.setAttribute("y2", svgHeight - padding);
+    xAxisLine.setAttribute("stroke", "black");
+    svg.appendChild(xAxisLine);
+
+    const yAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    yAxisLine.setAttribute("x1", leftPadding);
+    yAxisLine.setAttribute("y1", svgHeight - padding);
+    yAxisLine.setAttribute("x2", leftPadding);
+    yAxisLine.setAttribute("y2", padding);
+    yAxisLine.setAttribute("stroke", "black");
+    svg.appendChild(yAxisLine);
 
 
-    // X-axis label
-    const xAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    xAxisLabel.setAttribute("x", svgWidth / 2);
-    xAxisLabel.setAttribute("y", svgHeight - 5);
-    xAxisLabel.setAttribute("text-anchor", "middle");
-    xAxisLabel.classList.add("axis-label");
-    xAxisLabel.textContent = "Date";
-    svg.appendChild(xAxisLabel);
+    // Make ticks and labels for the axes
+    function drawTicksAndLabels() {
+        const numTicks = 5;
+        const xTickValues = [];
+        const yTickValues = [];
+        const roundedMax = roundToOneSignificantNumber(maxAmount);
 
-    // Y-axis label
-    const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    yAxisLabel.setAttribute("x", 15);
-    yAxisLabel.setAttribute("y", svgHeight / 2);
-    yAxisLabel.setAttribute("text-anchor", "middle");
-    yAxisLabel.classList.add("axis-label");
-    yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
-    yAxisLabel.textContent = "Experience Points";
-    svg.appendChild(yAxisLabel);
+        for (let i = 0; i <= numTicks; i++) {
+            const t = minTime + ((maxTime - minTime) / numTicks) * i;
+            xTickValues.push(new Date(t));
 
+            const a = minAmount + ((roundedMax - minAmount) / numTicks) * i;
+            yTickValues.push(a);
+        }
+
+        // X-axis ticks & labels
+        xTickValues.forEach(date => {
+            const x = xScale(date.getTime());
+
+            // Tick line
+            const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tick.setAttribute("x1", x);
+            tick.setAttribute("y1", svgHeight - padding);
+            tick.setAttribute("x2", x);
+            tick.setAttribute("y2", svgHeight - padding + 5);
+            tick.setAttribute("stroke", "black");
+            svg.appendChild(tick);
+
+            // Label
+            const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            label.setAttribute("x", x);
+            label.setAttribute("y", svgHeight - padding + 20);
+            label.setAttribute("text-anchor", "middle");
+            label.classList.add("tick-label");
+            label.textContent = date.toLocaleDateString("sv-SE"); // or "en-GB", etc.
+            svg.appendChild(label);
+        });
+
+        // Y-axis ticks & labels
+        yTickValues.forEach(amount => {
+            const y = yScale(amount);
+
+            // Tick line
+            const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tick.setAttribute("x1", leftPadding - 5);
+            tick.setAttribute("y1", y);
+            tick.setAttribute("x2", leftPadding);
+            tick.setAttribute("y2", y);
+            tick.setAttribute("stroke", "black");
+            svg.appendChild(tick);
+
+            // Grid line
+            const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            gridLine.setAttribute("x1", leftPadding);
+            gridLine.setAttribute("y1", y);
+            gridLine.setAttribute("x2", svgWidth - padding);
+            gridLine.setAttribute("y2", y);
+            gridLine.setAttribute("stroke", "grey");
+            svg.appendChild(gridLine);
+
+            // Label
+            const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            label.setAttribute("x", leftPadding - 10);
+            label.setAttribute("y", y + 4);
+            label.setAttribute("text-anchor", "end");
+            label.classList.add("tick-label");
+            label.textContent = amount.toLocaleString(); // e.g. 1,000
+            svg.appendChild(label);
+        });
+
+
+        // X-axis label
+        const xAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        xAxisLabel.setAttribute("x", svgWidth / 2);
+        xAxisLabel.setAttribute("y", svgHeight);
+        xAxisLabel.setAttribute("text-anchor", "middle");
+        xAxisLabel.classList.add("axis-label");
+        xAxisLabel.textContent = "Date";
+        svg.appendChild(xAxisLabel);
+
+        // Y-axis label
+        const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        yAxisLabel.setAttribute("x", 15);
+        yAxisLabel.setAttribute("y", svgHeight / 2);
+        yAxisLabel.setAttribute("text-anchor", "middle");
+        yAxisLabel.classList.add("axis-label");
+        yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
+        yAxisLabel.textContent = "Experience Points";
+        svg.appendChild(yAxisLabel);
+    }   
 
     dataContainer.appendChild(svg);
 }

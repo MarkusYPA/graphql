@@ -141,14 +141,17 @@ header {
     max-width: 800px;
     background-color: var(--bg3);
     display: block; /* removes inline spacing */
-
-    margin: auto;
 }
 
 .chart-line {
     stroke: var(--btn2);
     fill: none;
-    stroke-width: 4;
+    stroke-width: 2;
+}
+
+.data-tick {
+    stroke: var(--btn2);
+    stroke-width: 2;
 }
 
 .tick-label {
