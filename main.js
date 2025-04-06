@@ -73,8 +73,8 @@ function updateUI() {
 
 async function start() {
     fillUserInfo();
-    await xpGraph();
-    await skillsGraph();
+    xpGraph();
+    skillsGraph();
 }
 
 // Check that the stored jwt is valid
