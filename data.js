@@ -1,5 +1,5 @@
 import { contentErrorMessage } from "./main.js";
-import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
+import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
 
 export function getUserIdFromJWT() {
     const token = localStorage.getItem("jwt");
@@ -68,18 +68,39 @@ export async function getReceivedAuditData(usrId) {
     const data = await runQuery(groupIdsQuery, usrId);
     let groups = Object.values(data[Object.keys(data)[0]]).map(v => v); // get array of user's groups
 
+    // Count all audits for each group
     // await for all to resolve with Promise.all (forEach => await will not work) 
+    let unfinishedGroups = [];
     const allAuditData = await Promise.all(
         groups.map(async (group) => {
             const data = await runQuery(auditsForGroupQuery, group.groupId);
             const theseAudits = data[Object.keys(data)[0]];   // array of audit ids for this group
-            // audits in piscines can be filtered out by path here, if necessary.
+            // Raid audits in piscines can be filtered out by path here, if necessary.
+            if (theseAudits.length == 0) unfinishedGroups.push(group.groupId);
             return theseAudits.length;
         })
     );
 
     const auditsReceived = allAuditData.reduce((sum, count) => sum + count, 0);
-    return auditsReceived;
+
+    let groupSizes = await Promise.all(
+        groups.map(async (group) => {
+            if (unfinishedGroups.includes(group.groupId)) return null;
+            const data = await runQuery(groupMembersQuery, group.groupId);
+            const layer1 = data[Object.keys(data)[0]];
+            const members = layer1[Object.keys(layer1)[0]]['members'];
+            return members.length;
+        })
+    );
+    groupSizes = groupSizes.filter((size) => size !== null);
+
+    const avgGroupSize = groupSizes.reduce((sum, count) => sum + count, 0) / groupSizes.length;
+    const avgAuditorAmount = allAuditData.reduce((sum, count) => sum + count, 0) / groupSizes.length;
+
+    //console.log(avgGroupSize, avgAuditorAmount);
+
+    
+    return [auditsReceived, avgGroupSize, avgAuditorAmount];
 }
 
 export async function getGraphData(usrId) {
@@ -93,7 +114,7 @@ export async function getGraphData(usrId) {
             ta.path.endsWith('piscine-js')
         ) {
             const time = new Date(ta.createdAt).getTime()
-            xp.push({'amount': ta.amount, 'awarded': time})
+            xp.push({ 'amount': ta.amount, 'awarded': time })
         }
     });
     return xp;

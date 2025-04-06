@@ -39,6 +39,15 @@ export const auditsForGroupQuery = [`
   }
 }`]
 
+export const groupMembersQuery = [`
+{
+  group(where: {id: {_eq: `, `}}) {
+    members {
+      userId
+    }
+  }
+}`]
+
 
 export const introspectionQuery = `
 {

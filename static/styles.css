@@ -96,7 +96,7 @@ header {
     overflow-x: auto; 
 }
 
-#user-info {
+.user-info {
     display: flex;
     flex-direction: row;
     align-items: start;
@@ -114,28 +114,36 @@ header {
 .key-value-title {
     display: flex;
     flex-direction: column;
-    gap: 5px;
     font-size: large;
     font-weight: bold;
+    gap: 1rem;
+}
+
+#grids-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: start;
 }
 
 .key-value-info {
     font-size: medium;
     font-weight:normal;
     display: grid;
-    grid-template-columns: max-content auto max-content auto;
+    grid-template-columns: max-content auto; /* two columns */
     gap: 5px 15px;
 }
 
-#chart {
+#chart-container{
     box-sizing: border-box;
-    padding: 2rem;
+    width: 100%;
+}
 
-    border-style: solid;
-    border-width: 1rem;
-    border-radius: 2rem;
-    border-color: white;
+#chart-info-container{
+    width: 100%;
+}
 
+#chart {
     width: 100%;
     height: auto;
     max-width: 800px;

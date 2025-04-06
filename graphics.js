@@ -24,92 +24,143 @@ export function setColumnHeights(grow) {
     }
 }
 
+
 export async function fillUserInfo() {
     const userId = getUserIdFromJWT();
     const person = await getUserData(userId);
     const personDoneAudits = await getDoneAuditData(userId);
-    const personReceivedAudits = await getReceivedAuditData(userId);
+    const auditData = await getReceivedAuditData(userId);
+    const personReceivedAudits = auditData[0];
 
     const infoBox = document.createElement('div');
-    infoBox.id = 'user-info';
+    infoBox.classList.add('user-info');
 
     // container for personal info and audits
     const personInfoContainer = document.createElement('div');
-    const personalInfo = document.createElement('div');
     personInfoContainer.id = 'person-info-container';
     personInfoContainer.classList.add('key-value-title');
+    const gridsContainer = document.createElement('div');
+    gridsContainer.id = 'grids-container';
+
+    // title with user names
+    const titleRow = document.createElement('span');
+    titleRow.textContent = person.firstName + ' ' + person.lastName;
+    personInfoContainer.appendChild(titleRow);
+
+
+    // first info grid with id, username and xp
+    const personalInfo = document.createElement('div');
     personalInfo.id = 'personal-info';
     personalInfo.classList.add('key-value-info');
 
-    const titleRow = document.createElement('span');
-    const row2key1 = document.createElement('span');
-    const row2val1 = document.createElement('span');
-    const row3key1 = document.createElement('span');
-    const row3val1 = document.createElement('span');
-    const row4key1 = document.createElement('span');
-    const row4val1 = document.createElement('span');
+    const key1 = document.createElement('span');
+    const val1 = document.createElement('span');
+    const key2 = document.createElement('span');
+    const val2 = document.createElement('span');
+    const key3 = document.createElement('span');
+    const val3 = document.createElement('span');
 
-    titleRow.textContent = person.firstName + ' ' + person.lastName;
-    row2key1.textContent = 'id number:';
-    row2val1.textContent = person.id;
-    row3key1.textContent = 'username:';
-    row3val1.textContent = person.login;
-    row4key1.textContent = 'experience points:';
-    row4val1.textContent = person.totalXP;
+    key1.textContent = 'id number:';
+    val1.textContent = person.id;
+    key2.textContent = 'username:';
+    val2.textContent = person.login;
+    key3.textContent = 'experience points:';
+    val3.textContent = person.totalXP;
 
-    const row2key2 = document.createElement('span');
-    const row2val2 = document.createElement('span');
-    const row3key2 = document.createElement('span');
-    const row3val2 = document.createElement('span');
-    const row4key2 = document.createElement('span');
-    const row4val2 = document.createElement('span');
+    personalInfo.appendChild(key1);
+    personalInfo.appendChild(val1);
+    personalInfo.appendChild(key2);
+    personalInfo.appendChild(val2);
+    personalInfo.appendChild(key3);
+    personalInfo.appendChild(val3);
 
-    row2key2.textContent = 'audits done:';
-    row2val2.textContent = personDoneAudits;
-    row3key2.textContent = 'audits received:';
-    row3val2.textContent = personReceivedAudits;
-    row4key2.textContent = 'audits ratio:';
-    row4val2.textContent = Math.round(person.auditRatio * 1000) / 1000;
+    gridsContainer.appendChild(personalInfo);
 
-    personInfoContainer.appendChild(titleRow);
+    // second info grid about audits
+    const auditInfo = document.createElement('div');
+    auditInfo.id = 'audit-info';
+    auditInfo.classList.add('key-value-info');
 
-    personalInfo.appendChild(row2key1);
-    personalInfo.appendChild(row2val1);
-    personalInfo.appendChild(row2key2);
-    personalInfo.appendChild(row2val2);
+    const auditkey1 = document.createElement('span');
+    const auditval1 = document.createElement('span');
+    const auditkey2 = document.createElement('span');
+    const auditval2 = document.createElement('span');
+    const auditkey3 = document.createElement('span');
+    const auditval3 = document.createElement('span');
+    const auditkey4 = document.createElement('span');
+    const auditval4 = document.createElement('span');
+    const auditkey5 = document.createElement('span');
+    const auditval5 = document.createElement('span');
+    const auditkey6 = document.createElement('span');
+    const auditval6 = document.createElement('span');
 
-    personalInfo.appendChild(row3key1);
-    personalInfo.appendChild(row3val1);
-    personalInfo.appendChild(row3key2);
-    personalInfo.appendChild(row3val2);
+    auditkey1.textContent = 'audits done:';
+    auditval1.textContent = personDoneAudits;
+    auditkey2.textContent = 'audits received:';
+    auditval2.textContent = personReceivedAudits;
+    auditkey3.textContent = 'audits ratio:';
+    auditval3.textContent = Math.round(person.auditRatio * 1000) / 1000;
+    auditkey4.textContent = 'avg group size:';
+    auditval4.textContent = Math.round(auditData[1] * 100) / 100;
+    auditkey5.textContent = 'avg num of auditors:';
+    auditval5.textContent = Math.round(auditData[2] * 100) / 100;
+    auditkey6.textContent = 'audit activity ratio:';
+    const aar = (personDoneAudits / auditData[1]) / (personReceivedAudits / auditData[2]);
+    auditval6.textContent = Math.round(aar * 100) / 100;
 
-    personalInfo.appendChild(row4key1);
-    personalInfo.appendChild(row4val1);
-    personalInfo.appendChild(row4key2);
-    personalInfo.appendChild(row4val2);
+    auditInfo.appendChild(auditkey1);
+    auditInfo.appendChild(auditval1);
+    auditInfo.appendChild(auditkey2);
+    auditInfo.appendChild(auditval2);
+    auditInfo.appendChild(auditkey3);
+    auditInfo.appendChild(auditval3);
+    auditInfo.appendChild(auditkey4);
+    auditInfo.appendChild(auditval4);
+    auditInfo.appendChild(auditkey5);
+    auditInfo.appendChild(auditval5);
+    auditInfo.appendChild(auditkey6);
+    auditInfo.appendChild(auditval6);
 
-    personInfoContainer.appendChild(personalInfo);
+    gridsContainer.appendChild(auditInfo);
+
+
+    // add grids to container
+    personInfoContainer.appendChild(gridsContainer);
     infoBox.appendChild(personInfoContainer);
 
     dataContainer.prepend(infoBox);
 }
 
+
 export async function drawGraph() {
     const userId = getUserIdFromJWT();
     const graphData = await getGraphData(userId);
+
+    // container for chart (deals with borders)
+    const chartContainer = document.createElement('div');
+    chartContainer.id = 'chart-container';
+    chartContainer.classList.add('user-info');
+
+    // container for chart info (deals with layout)
+    const chartInfoContainer = document.createElement('div');
+    chartInfoContainer.id = 'chart-info-container';
+    chartInfoContainer.classList.add('key-value-title');
+
+    // title with user names
+    const titleRow = document.createElement('span');
+    titleRow.textContent = 'XP progression over time';
+    chartInfoContainer.appendChild(titleRow);
 
     //const svgWidth = dataContainer.clientWidth || 800;
     const padding = 40;
     const leftPadding = 90; // more room for y label
     const svgWidth = 800;
-    const svgHeight = 400; // keep a fixed height for now
+    const svgHeight = 400;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.id = 'chart';
     svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet"); // optional but helpful
-    svg.style.width = "100%";
-    svg.style.height = "auto";
 
     const times = graphData.map(d => d.awarded);
     const amountsSeparate = graphData.map(d => d.amount);
@@ -147,7 +198,7 @@ export async function drawGraph() {
         const x = xScale(times[i]);
         const y = yScale(amountsAcc[i]);
         points.push(`${x},${y}`);
-    
+
         const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
         tick.setAttribute("x1", x);
         tick.setAttribute("y1", y - 6);
@@ -156,8 +207,8 @@ export async function drawGraph() {
         tick.classList.add("data-tick");
         svg.appendChild(tick);
     }
-    
-    
+
+
 
     // Axis lines
     const xAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -266,7 +317,9 @@ export async function drawGraph() {
         yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
         yAxisLabel.textContent = "Experience Points";
         svg.appendChild(yAxisLabel);
-    }   
+    }
 
-    dataContainer.appendChild(svg);
+    chartInfoContainer.appendChild(svg);
+    chartContainer.appendChild(chartInfoContainer);
+    dataContainer.appendChild(chartContainer);
 }
