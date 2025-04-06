@@ -208,8 +208,6 @@ export async function xpGraph() {
         svg.appendChild(tick);
     }
 
-
-
     // Axis lines
     const xAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     xAxisLine.setAttribute("x1", leftPadding);
@@ -339,7 +337,7 @@ export async function skillsGraph() {
 
     // title with user names
     const titleRow = document.createElement('h3');
-    titleRow.textContent = 'Skills';
+    titleRow.textContent = 'Acquired Skills';
     chartInfoContainer.appendChild(titleRow);
 
     const svgWidth = 800;
@@ -359,6 +357,8 @@ export async function skillsGraph() {
     svg.classList.add('chart');
     svg.setAttribute("width", svgWidth);
     svg.setAttribute("height", svgHeight);
+    svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet"); // optional but helpful
 
     // Y-axis scale
     const yScale = (amount) =>
