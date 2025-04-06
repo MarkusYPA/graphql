@@ -9,7 +9,6 @@ export let infoBox;
 export let lineChartContainer;
 export let barChartContainer;
 
-export let dataContainer;
 export const numberOfColumns = 25;
 
 async function logIn(e) {
@@ -55,6 +54,21 @@ function logout() {
     console.log("Logged out");
 }
 
+function notLoggedInView(){
+    usernameDisplay.textContent = '';
+    logoutButton.hidden = true;
+    loginSection.style.display = 'flex';
+    infoBox.innerHTML = '';
+    lineChartContainer.innerHTML = '';
+    barChartContainer.innerHTML = '';
+
+    infoBox.style.display = "none";
+    lineChartContainer.style.display = "none";
+    barChartContainer.style.display = "none";
+
+    setColumnHeights(true);
+}
+
 function updateUI() {
     contentErrorMessage.textContent = '';
     const token = localStorage.getItem("jwt");
@@ -65,26 +79,14 @@ function updateUI() {
         logoutButton.hidden = false;
         loginSection.style.display = "none";
 
-        infoBox.style.visibility = "visible";
-        lineChartContainer.style.visibility = "visible";
-        barChartContainer.style.visibility = "visible";
+        infoBox.style.display = "flex";
+        lineChartContainer.style.display = "flex";
+        barChartContainer.style.display = "flex";
 
         setColumnHeights(false);
         start();
     } else {
-        usernameDisplay.textContent = '';
-        logoutButton.hidden = true;
-        loginSection.style.display = 'flex';
-        //dataContainer.innerHTML = '';
-        infoBox.innerHTML = '';
-        lineChartContainer.innerHTML = '';
-        barChartContainer.innerHTML = '';
-
-        infoBox.style.visibility = "hidden";
-        lineChartContainer.style.visibility = "hidden";
-        barChartContainer.style.visibility = "hidden";
-
-        setColumnHeights(true);
+        notLoggedInView();
     }
 }
 
@@ -117,14 +119,12 @@ async function verifyJWT() {
     }
 }
 
-addEventListener("DOMContentLoaded", function () {
+addEventListener("DOMContentLoaded", async function () {
     loginErrorMessage = document.getElementById("login-error-message");
     loginSection = document.getElementById('login-section')
     usernameDisplay = document.getElementById("username-display");
     logoutButton = document.getElementById("logout-button");
-    dataContainer = document.getElementById("data-container");
     contentErrorMessage = this.document.getElementById('content-error-message');
-
     infoBox = document.querySelector('#personal-info');
     lineChartContainer = document.querySelector('#line-chart');
     barChartContainer = document.querySelector('#bar-chart');
@@ -132,5 +132,7 @@ addEventListener("DOMContentLoaded", function () {
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
 
-    if (verifyJWT()) updateUI(); // Check login state on page load
+    notLoggedInView();
+
+    if (await verifyJWT()) updateUI(); // Check login state on page load
 })
