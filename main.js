@@ -76,6 +76,29 @@ async function start() {
     drawGraph();
 }
 
+// Check that the stored jwt is valid
+async function verifyJWT() {
+    const token = localStorage.getItem("jwt");
+    if (!token) return false;    
+    const verifyQuery = `{ user { id }}`  // 'normal' query (not nested, no arguments)
+
+    try {
+        const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ query: verifyQuery })
+        });
+        return res.ok;
+    } catch (error) {
+        console.error("Login request failed:", error);
+        loginErrorMessage.textContent = "Login not allowed from this location";
+        return false;
+    }
+}
+
 addEventListener("DOMContentLoaded", function () {
     loginErrorMessage = document.getElementById("login-error-message");
     loginSection = document.getElementById('login-section')
@@ -87,5 +110,5 @@ addEventListener("DOMContentLoaded", function () {
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
 
-    updateUI(); // Check login state on page load
+    if (verifyJWT()) updateUI(); // Check login state on page load
 })
