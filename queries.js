@@ -1,6 +1,6 @@
-export const userInfoQuery = [`
+export const userInfoQuery = `
 {
-  user(where: {id: {_eq: `, ` }}) {
+  user {
     id
     firstName
     lastName
@@ -14,7 +14,7 @@ export const userInfoQuery = [`
       path
     }
   }
-}`]
+}`
 
 
 export const auditsDoneQuery = [`
@@ -48,6 +48,35 @@ export const groupMembersQuery = [`
   }
 }`]
 
+export const xpFromTransactionQuery = [`
+{
+  transaction(
+    where: {_and: [{userId: {_eq: `, `}}, {type: {_eq: "xp"}}]}
+    order_by: {createdAt: asc}
+  ) {
+    amount
+    createdAt
+    path
+  }
+}`]
+
+export const skillsFromTransactionsQuery = `
+{
+  user {
+    skills: transactions(
+      order_by: [{type: desc}, {amount: desc}]
+      distinct_on: [type]
+      where: {type: {_like: "skill%"}}
+    ) {
+      type
+      amount
+    }
+  }
+}`
+
+
+
+
 
 export const introspectionQuery = `
 {
@@ -61,20 +90,6 @@ export const introspectionQuery = `
         }
     }
 } `
-
-
-
-export const xpFromTransactionQuery = [`
-{
-  transaction(
-    where: {_and: [{userId: {_eq: `, `}}, {type: {_eq: "xp"}}]}
-    order_by: {createdAt: asc}
-  ) {
-    amount
-    createdAt
-    path
-  }
-}`]
 
 export const transactions2 = [`
 {

@@ -1,5 +1,5 @@
 import { roundToOneSignificantNumber } from "./calculations.js";
-import { getDoneAuditData, getGraphData, getReceivedAuditData, getUserData, getUserIdFromJWT } from "./data.js";
+import { getDoneAuditData, getGraphData, getReceivedAuditData, getSkillsData, getUserData, getUserIdFromJWT } from "./data.js";
 import { dataContainer, numberOfColumns } from "./main.js";
 
 
@@ -27,7 +27,7 @@ export function setColumnHeights(grow) {
 
 export async function fillUserInfo() {
     const userId = getUserIdFromJWT();
-    const person = await getUserData(userId);
+    const person = await getUserData();
     const personDoneAudits = await getDoneAuditData(userId);
     const auditData = await getReceivedAuditData(userId);
     const personReceivedAudits = auditData[0];
@@ -132,18 +132,18 @@ export async function fillUserInfo() {
 }
 
 
-export async function drawGraph() {
+export async function xpGraph() {
     const userId = getUserIdFromJWT();
     const graphData = await getGraphData(userId);
 
     // container for chart (deals with borders)
     const chartContainer = document.createElement('div');
-    chartContainer.id = 'chart-container';
+    chartContainer.classList.add('chart-container');
     chartContainer.classList.add('user-info');
 
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
-    chartInfoContainer.id = 'chart-info-container';
+    chartInfoContainer.classList.add('chart-info-container');
     chartInfoContainer.classList.add('key-value-title');
 
     // title with user names
@@ -158,7 +158,7 @@ export async function drawGraph() {
     const svgHeight = 400;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.id = 'chart';
+    svg.classList.add('chart');
     svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet"); // optional but helpful
 
@@ -318,6 +318,131 @@ export async function drawGraph() {
         yAxisLabel.textContent = "Experience Points";
         svg.appendChild(yAxisLabel);
     }
+
+    chartInfoContainer.appendChild(svg);
+    chartContainer.appendChild(chartInfoContainer);
+    dataContainer.appendChild(chartContainer);
+}
+
+export async function skillsGraph() {
+    const skills = await getSkillsData();
+
+    // container for chart (deals with borders)
+    const chartContainer = document.createElement('div');
+    chartContainer.classList.add('chart-container');
+    chartContainer.classList.add('user-info');
+
+    // container for chart info (deals with layout)
+    const chartInfoContainer = document.createElement('div');
+    chartInfoContainer.classList.add('chart-info-container');
+    chartInfoContainer.classList.add('key-value-title');
+
+    // title with user names
+    const titleRow = document.createElement('h3');
+    titleRow.textContent = 'Skills';
+    chartInfoContainer.appendChild(titleRow);
+
+    const svgWidth = 800;
+    const svgHeight = 400;
+    const padding = 40;
+    const leftPadding = 90; // more room for y label
+
+    const r = 2; // bar-to-gap width ratio
+    const gaps = skills.length - 1;
+    const barGap = svgWidth / (gaps * r + gaps + r);    // formula for gap width
+    const barWidth = barGap * r;
+
+    const chartHeight = svgHeight - 2 * padding;
+    const maxAmount = 100;
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add('chart');
+    svg.setAttribute("width", svgWidth);
+    svg.setAttribute("height", svgHeight);
+
+    // Y-axis scale
+    const yScale = (amount) =>
+        chartHeight - (amount / maxAmount) * chartHeight + padding;
+
+    // Draw bars
+    skills.forEach((entry, index) => {
+        const x = leftPadding + index * (barWidth + barGap);
+        const skillLabel = entry.type.replace("skill_", "");
+
+        const backgroundBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        backgroundBar.setAttribute("x", x);
+        backgroundBar.setAttribute("y", yScale(100));
+        backgroundBar.setAttribute("width", barWidth);
+        backgroundBar.setAttribute("height", chartHeight);
+        //backgroundBar.setAttribute("fill", "#eee");
+        backgroundBar.classList.add('background-bar');
+        svg.appendChild(backgroundBar);
+
+        const foregroundBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        foregroundBar.setAttribute("x", x);
+        foregroundBar.setAttribute("y", yScale(entry.amount));
+        foregroundBar.setAttribute("width", barWidth);
+        foregroundBar.setAttribute("height", (entry.amount / maxAmount) * chartHeight);
+        //foregroundBar.setAttribute("fill", "#3498db");
+        foregroundBar.classList.add('foreground-bar');
+        svg.appendChild(foregroundBar);
+
+        // Value label
+        const valueLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        valueLabel.setAttribute("x", x + barWidth / 2);
+        valueLabel.setAttribute("y", yScale(entry.amount) - 5);
+        valueLabel.setAttribute("text-anchor", "middle");
+        valueLabel.classList.add("tick-label");
+        //valueLabel.setAttribute("font-size", "10");
+        valueLabel.textContent = `${entry.amount}%`;
+        svg.appendChild(valueLabel);
+
+        // X-axis label
+        const xLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");        
+        xLabel.setAttribute("x", x + barWidth / 2);
+
+        xLabel.setAttribute("y", svgHeight - 5);
+        xLabel.setAttribute("text-anchor", "end");
+        xLabel.setAttribute("font-size", "10");
+        xLabel.setAttribute("transform", `rotate(-45 ${x + barWidth / 2} ${svgHeight - 5})`);
+
+        xLabel.textContent = skillLabel;
+        xLabel.classList.add("axis-label");
+        svg.appendChild(xLabel);
+    });
+
+    // Y-axis ticks
+    for (let i = 0; i <= 5; i++) {
+        const value = i * 20;
+        const y = yScale(value);
+
+        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        tick.setAttribute("x1", leftPadding - (10 + barGap));
+        tick.setAttribute("x2", leftPadding - barGap);
+        tick.setAttribute("y1", y);
+        tick.setAttribute("y2", y);
+        tick.setAttribute("stroke", "#333");
+        svg.appendChild(tick);
+
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", leftPadding - (15 + barGap));
+        label.setAttribute("y", y + 4);
+        label.setAttribute("text-anchor", "end");
+        //label.setAttribute("font-size", "10");
+        label.classList.add("tick-label");
+        label.textContent = `${value}%`;
+        svg.appendChild(label);
+    }
+
+    // Axis label
+    const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    yAxisLabel.setAttribute("x", 15);
+    yAxisLabel.setAttribute("y", svgHeight / 2);
+    yAxisLabel.setAttribute("text-anchor", "middle");
+    yAxisLabel.setAttribute("font-size", "12");
+    yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
+    yAxisLabel.textContent = "Skill Level (%)";
+    svg.appendChild(yAxisLabel);
 
     chartInfoContainer.appendChild(svg);
     chartContainer.appendChild(chartInfoContainer);

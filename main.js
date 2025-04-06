@@ -1,4 +1,4 @@
-import { drawGraph, fillUserInfo, setColumnHeights } from "./graphics.js";
+import { fillUserInfo, setColumnHeights, skillsGraph, xpGraph } from "./graphics.js";
 
 let loginErrorMessage;
 export let contentErrorMessage;
@@ -73,7 +73,8 @@ function updateUI() {
 
 async function start() {
     fillUserInfo();
-    drawGraph();
+    await xpGraph();
+    await skillsGraph();
 }
 
 // Check that the stored jwt is valid

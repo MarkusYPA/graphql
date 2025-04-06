@@ -3,6 +3,7 @@
     --bg1: #e6eec9;
     --bg2: #949494;
     --bg3: #dfddd3;
+    --bg4: #ffffff6f;
     --text1: #ffffff;
     --text2: #cb0000;
     --btn1: #c77e00;
@@ -17,7 +18,7 @@ body {
     background-color: var(--bg1);
     color: white;
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
 
     /* Classical Humanist font stack */
     font-family: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
@@ -91,7 +92,7 @@ header {
     flex-direction: column;
     align-items: flex-start;
     padding: 7rem 2rem;
-    gap: 1rem;
+    gap: 2rem;
 
     max-width: 100%;
     overflow-x: auto;
@@ -130,12 +131,7 @@ h3 {
     flex-direction: row;
     gap: 1rem;
     align-items: start;
-}
-
-@media (max-width: 800px) {
-    #grids-container {
-        flex-direction: column;
-    }
+    flex-wrap: wrap;
 }
 
 .key-value-info {
@@ -147,19 +143,20 @@ h3 {
     gap: 5px 15px;
 }
 
-#chart-container {
+.chart-container {
     box-sizing: border-box;
     width: 100%;
+    max-width: 1000px;
 }
 
-#chart-info-container {
+.chart-info-container {
     width: 100%;
 }
 
-#chart {
+.chart {
     width: 100%;
     height: auto;
-    max-width: 800px;
+    /* max-width: 800px; */
     background-color: var(--bg3);
     display: block;
     /* removes inline spacing */
@@ -167,7 +164,7 @@ h3 {
 }
 
 .chart-line {
-    stroke: var(--btn2);
+    stroke: var(--btn1);
     fill: none;
     stroke-width: 2;
 }
@@ -183,4 +180,12 @@ h3 {
 
 .axis-label {
     font-size: medium;
+}
+
+.background-bar {
+    fill: var(--bg4);
+}
+
+.foreground-bar{
+    fill: var(--btn1);
 }

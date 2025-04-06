@@ -1,5 +1,5 @@
 import { contentErrorMessage } from "./main.js";
-import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
+import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
 
 export function getUserIdFromJWT() {
     const token = localStorage.getItem("jwt");
@@ -10,7 +10,7 @@ export function getUserIdFromJWT() {
     return payload.sub; // return x-hasura-user-id from payload
 }
 
-async function runQuery(queryArgs, id) {
+async function runQuery(queryArg) {
     const token = localStorage.getItem("jwt");
 
     try {
@@ -21,7 +21,7 @@ async function runQuery(queryArgs, id) {
                 "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
-                query: queryArgs[0] + id + queryArgs[1]
+                query: queryArg
             })
         });
 
@@ -40,8 +40,8 @@ async function runQuery(queryArgs, id) {
     }
 }
 
-export async function getUserData(usrId) {
-    const data = await runQuery(userInfoQuery, usrId);
+export async function getUserData() {
+    const data = await runQuery(userInfoQuery);
     let person = data[Object.keys(data)[0]]['0'];
 
     person.totalXP = 0
@@ -59,13 +59,13 @@ export async function getUserData(usrId) {
 }
 
 export async function getDoneAuditData(usrId) {
-    const data = await runQuery(auditsDoneQuery, usrId);
+    const data = await runQuery(auditsDoneQuery[0] + usrId + auditsDoneQuery[1]);
     const auditsDone = data[Object.keys(data)[0]];
     return auditsDone.length
 }
 
 export async function getReceivedAuditData(usrId) {
-    const data = await runQuery(groupIdsQuery, usrId);
+    const data = await runQuery(groupIdsQuery[0] + usrId + groupIdsQuery[1]);
     let groups = Object.values(data[Object.keys(data)[0]]).map(v => v); // get array of user's groups
 
     // Count all audits for each group
@@ -73,7 +73,7 @@ export async function getReceivedAuditData(usrId) {
     let unfinishedGroups = [];
     const allAuditData = await Promise.all(
         groups.map(async (group) => {
-            const data = await runQuery(auditsForGroupQuery, group.groupId);
+            const data = await runQuery(auditsForGroupQuery[0] + group.groupId + auditsForGroupQuery[1]);
             const theseAudits = data[Object.keys(data)[0]];   // array of audit ids for this group
             // Raid audits in piscines can be filtered out by path here, if necessary.
             if (theseAudits.length == 0) unfinishedGroups.push(group.groupId);
@@ -86,7 +86,7 @@ export async function getReceivedAuditData(usrId) {
     let groupSizes = await Promise.all(
         groups.map(async (group) => {
             if (unfinishedGroups.includes(group.groupId)) return null;
-            const data = await runQuery(groupMembersQuery, group.groupId);
+            const data = await runQuery(groupMembersQuery[0] + group.groupId +groupMembersQuery[1]);
             const layer1 = data[Object.keys(data)[0]];
             const members = layer1[Object.keys(layer1)[0]]['members'];
             return members.length;
@@ -104,8 +104,7 @@ export async function getReceivedAuditData(usrId) {
 }
 
 export async function getGraphData(usrId) {
-    const data = await runQuery(xpFromTransactionQuery, usrId);
-    //console.log(Array.isArray(data.transaction));
+    const data = await runQuery(xpFromTransactionQuery[0] + usrId +xpFromTransactionQuery[1]);
 
     const xp = [];
     data.transaction.forEach(ta => {
@@ -118,4 +117,10 @@ export async function getGraphData(usrId) {
         }
     });
     return xp;
+}
+
+export async function getSkillsData(){
+    const data = await runQuery(skillsFromTransactionsQuery);
+    const skills = data.user[0].skills.sort((a,b) => b.amount - a.amount)
+    return skills;
 }
