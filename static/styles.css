@@ -20,6 +20,9 @@ body {
     /* Push content down so it's not under the header */
     margin: 0;
     height: 100vh;
+
+    /* Classical Humanist font stack */
+    font-family: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
 }
 
 #login-columns {
@@ -93,7 +96,7 @@ header {
     gap: 1rem;
 
     max-width: 100%;
-    overflow-x: auto; 
+    overflow-x: auto;
 }
 
 .user-info {
@@ -109,6 +112,11 @@ header {
 
     color: black;
     background-color: var(--bg3);
+}
+
+h3 {
+    margin: 0;
+    font-family: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
 }
 
 .key-value-title {
@@ -128,18 +136,19 @@ header {
 
 .key-value-info {
     font-size: medium;
-    font-weight:normal;
+    font-weight: normal;
     display: grid;
-    grid-template-columns: max-content auto; /* two columns */
+    grid-template-columns: max-content auto;
+    /* two columns */
     gap: 5px 15px;
 }
 
-#chart-container{
+#chart-container {
     box-sizing: border-box;
     width: 100%;
 }
 
-#chart-info-container{
+#chart-info-container {
     width: 100%;
 }
 
@@ -148,7 +157,9 @@ header {
     height: auto;
     max-width: 800px;
     background-color: var(--bg3);
-    display: block; /* removes inline spacing */
+    display: block;
+    /* removes inline spacing */
+    font-weight: normal;
 }
 
 .chart-line {
@@ -167,5 +178,5 @@ header {
 }
 
 .axis-label {
-    font-size:medium;
+    font-size: medium;
 }

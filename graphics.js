@@ -43,7 +43,7 @@ export async function fillUserInfo() {
     gridsContainer.id = 'grids-container';
 
     // title with user names
-    const titleRow = document.createElement('span');
+    const titleRow = document.createElement('h3');
     titleRow.textContent = person.firstName + ' ' + person.lastName;
     personInfoContainer.appendChild(titleRow);
 
@@ -147,7 +147,7 @@ export async function drawGraph() {
     chartInfoContainer.classList.add('key-value-title');
 
     // title with user names
-    const titleRow = document.createElement('span');
+    const titleRow = document.createElement('h3');
     titleRow.textContent = 'XP progression over time';
     chartInfoContainer.appendChild(titleRow);
 
