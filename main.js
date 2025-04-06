@@ -5,6 +5,10 @@ export let contentErrorMessage;
 let loginSection;
 let usernameDisplay;
 let logoutButton;
+export let infoBox;
+export let lineChartContainer;
+export let barChartContainer;
+
 export let dataContainer;
 export const numberOfColumns = 25;
 
@@ -60,13 +64,26 @@ function updateUI() {
         usernameDisplay.textContent = `Logged in as ${username}`;
         logoutButton.hidden = false;
         loginSection.style.display = "none";
+
+        infoBox.style.visibility = "visible";
+        lineChartContainer.style.visibility = "visible";
+        barChartContainer.style.visibility = "visible";
+
         setColumnHeights(false);
         start();
     } else {
         usernameDisplay.textContent = '';
         logoutButton.hidden = true;
         loginSection.style.display = 'flex';
-        dataContainer.innerHTML = '';
+        //dataContainer.innerHTML = '';
+        infoBox.innerHTML = '';
+        lineChartContainer.innerHTML = '';
+        barChartContainer.innerHTML = '';
+
+        infoBox.style.visibility = "hidden";
+        lineChartContainer.style.visibility = "hidden";
+        barChartContainer.style.visibility = "hidden";
+
         setColumnHeights(true);
     }
 }
@@ -107,6 +124,10 @@ addEventListener("DOMContentLoaded", function () {
     logoutButton = document.getElementById("logout-button");
     dataContainer = document.getElementById("data-container");
     contentErrorMessage = this.document.getElementById('content-error-message');
+
+    infoBox = document.querySelector('#personal-info');
+    lineChartContainer = document.querySelector('#line-chart');
+    barChartContainer = document.querySelector('#bar-chart');
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);

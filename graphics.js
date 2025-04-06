@@ -1,6 +1,6 @@
 import { roundToOneSignificantNumber } from "./calculations.js";
 import { getDoneAuditData, getGraphData, getReceivedAuditData, getSkillsData, getUserData, getUserIdFromJWT } from "./data.js";
-import { dataContainer, numberOfColumns } from "./main.js";
+import { barChartContainer, infoBox, lineChartContainer, numberOfColumns } from "./main.js";
 
 
 export function setColumnHeights(grow) {
@@ -32,7 +32,7 @@ export async function fillUserInfo() {
     const auditData = await getReceivedAuditData(userId);
     const personReceivedAudits = auditData[0];
 
-    const infoBox = document.querySelector('#personal-info');
+    //const infoBox = document.querySelector('#personal-info');
 
     // container for personal info and audits
     const personInfoContainer = document.createElement('div');
@@ -134,7 +134,7 @@ export async function xpGraph() {
     const graphData = await getGraphData(userId);
 
     // container for chart (deals with borders)
-    const chartContainer = document.querySelector('#line-chart');
+    //const chartContainer = document.querySelector('#line-chart');
 
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
@@ -313,14 +313,14 @@ export async function xpGraph() {
     }
 
     chartInfoContainer.appendChild(svg);
-    chartContainer.appendChild(chartInfoContainer);
+    lineChartContainer.appendChild(chartInfoContainer);
 }
 
 export async function skillsGraph() {
     const skills = await getSkillsData();
 
     // container for chart (deals with borders)
-    const chartContainer = document.querySelector('#bar-chart');
+    //const chartContainer = document.querySelector('#bar-chart');
 
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
@@ -450,5 +450,5 @@ export async function skillsGraph() {
     svg.appendChild(yAxisLabel);
 
     chartInfoContainer.appendChild(svg);
-    chartContainer.appendChild(chartInfoContainer);
+    barChartContainer.appendChild(chartInfoContainer);
 }
