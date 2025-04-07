@@ -2,7 +2,7 @@ import { contentErrorMessage } from "./main.js";
 import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
 
 export function getUserIdFromJWT() {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("gritlabGraphQLjwt");
     if (!token) return null;
 
     // jwt parts separated by dots: 0 header, 1 payload, 2 signature - Decode payload:
@@ -11,7 +11,7 @@ export function getUserIdFromJWT() {
 }
 
 async function runQuery(queryArg) {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("gritlabGraphQLjwt");
 
     try {
         const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {

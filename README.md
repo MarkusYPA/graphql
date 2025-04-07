@@ -1,6 +1,6 @@
 # graphql
 
-A web-based profile page powered by GraphQL that displays personal school statistics using authenticated data from the [GritLab GraphQL API](https://01.gritlab.ax/api/graphql-engine/v1/graphql).
+A web-based profile page powered by GraphQL that displays personal school statistics using authenticated data from the [grit:lab GraphQL API](https://01.gritlab.ax/api/graphql-engine/v1/graphql).
 
 ## 📌 Objectives
 

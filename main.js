@@ -29,8 +29,8 @@ async function logIn(e) {
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem("jwt", data);  // Store JWT for future requests
-            localStorage.setItem("username", nameOrEmail); // Store username for display
+            localStorage.setItem("gritlabGraphQLjwt", data);  // Store JWT for future requests
+            localStorage.setItem("gritlabGraphQLusername", nameOrEmail); // Store username for display
             loginErrorMessage.textContent = '';
             console.log("Login successful");
             setColumnHeights(false);
@@ -48,8 +48,8 @@ async function logIn(e) {
 }
 
 function logout() {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("username");
+    localStorage.removeItem("gritlabGraphQLjwt");
+    localStorage.removeItem("gritlabGraphQLusername");
     updateUI();
     console.log("Logged out");
 }
@@ -71,8 +71,8 @@ function notLoggedInView(){
 
 function updateUI() {
     contentErrorMessage.textContent = '';
-    const token = localStorage.getItem("jwt");
-    const username = localStorage.getItem("username");
+    const token = localStorage.getItem("gritlabGraphQLjwt");
+    const username = localStorage.getItem("gritlabGraphQLusername");
 
     if (token && username) {
         usernameDisplay.textContent = `Logged in as ${username}`;
@@ -98,7 +98,7 @@ async function start() {
 
 // Check that the stored jwt is valid
 async function verifyJWT() {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("gritlabGraphQLjwt");
     if (!token) return false;    
     const verifyQuery = `{ user { id }}`  // 'normal' query (not nested, no arguments)
 
