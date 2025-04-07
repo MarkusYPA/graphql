@@ -36,7 +36,7 @@ async function loadContent() {
     fillUserInfo(person, personDoneAudits, auditData);
     xpGraph(graphData);
     skillsGraph(skills);
-    setMode(isStark);
+    setMode();
 }
 
 function updateUI() {
