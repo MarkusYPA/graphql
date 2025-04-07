@@ -1,7 +1,7 @@
 import { barChartContainer, infoBox, lineChartContainer, loginSection, logoutButton, numberOfColumns, usernameDisplay } from "../controller.js";
 
-export function setMode(toStark) {
-    const starkSelectors = [
+export function setMode() {
+    const modeElementSelectors = [
         'html',
         'body',
         'header',
@@ -25,13 +25,12 @@ export function setMode(toStark) {
         '#mode-button'
     ];
 
-    // Select all matching elements
-    const starkElements = document.querySelectorAll(starkSelectors.join(','));
+    const modeElements = document.querySelectorAll(modeElementSelectors.join(','));
 
-    if (toStark)
-        starkElements.forEach(el => el.classList.add('stark'));
+    if (localStorage.getItem('theme') === 'stark')
+        modeElements.forEach(el => el.classList.add('stark'));
     else
-        starkElements.forEach(el => el.classList.remove('stark'));
+        modeElements.forEach(el => el.classList.remove('stark'));
 }
 
 export function setColumnHeights(grow) {

@@ -11,7 +11,6 @@ export let infoBox;
 export let lineChartContainer;
 export let barChartContainer;
 let modeButton;
-export let isStark = false;
 
 export const numberOfColumns = 25;
 
@@ -19,14 +18,21 @@ async function loadContent() {
     const userId = getUserIdFromJWT();
 
     // Get the data to be displayed
-    const [person, personDoneAudits, auditData, graphData, skills] = await Promise.all([
-        getUserData(),
-        getDoneAuditData(userId),
-        getReceivedAuditData(userId),
-        getGraphData(userId),
-        getSkillsData(),
-    ]);
+    let results;
+    try {
+        results = await Promise.all([
+            getUserData(),
+            getDoneAuditData(userId),
+            getReceivedAuditData(userId),
+            getGraphData(userId),
+            getSkillsData(),
+        ]);
+    } catch (err) {
+        console.error("Failed to fetch data:", err);
+        return;
+    }
 
+    const [person, personDoneAudits, auditData, graphData, skills] = results;
     fillUserInfo(person, personDoneAudits, auditData);
     xpGraph(graphData);
     skillsGraph(skills);
@@ -87,9 +93,8 @@ addEventListener("DOMContentLoaded", async function () {
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
     modeButton.addEventListener("click", toggleMode);
-
-    isStark = localStorage.getItem('theme') === 'stark';
-    setMode(isStark)
+    
+    setMode()
 
     if (await verifyJWT()) { // Check login state on page load
         updateUI();
@@ -100,11 +105,10 @@ addEventListener("DOMContentLoaded", async function () {
 })
 
 function toggleMode() {
-    if (isStark) {
+    if (localStorage.getItem('theme') === 'stark') {
         localStorage.setItem('theme', 'mild');
     } else {
         localStorage.setItem('theme', 'stark');
     }
-    isStark = !isStark;
-    setMode(isStark);
+    setMode();
 }
