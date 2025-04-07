@@ -1,7 +1,5 @@
-
 // 'normal' query: no nesting, no arguments
 export const verifyQuery = `{ user { id }}`
-
 
 // query with nesting
 export const userInfoQuery = `

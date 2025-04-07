@@ -1,4 +1,4 @@
-import { contentErrorMessage } from "./controller.js";
+import { contentErrorMessage } from "../controller.js";
 import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, verifyQuery, xpFromTransactionQuery } from "./queries.js";
 
 export async function getJWT(credentials) {
