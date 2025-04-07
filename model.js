@@ -1,5 +1,47 @@
-import { contentErrorMessage } from "./main.js";
-import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, xpFromTransactionQuery } from "./queries.js";
+import { contentErrorMessage } from "./controller.js";
+import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, verifyQuery, xpFromTransactionQuery } from "./queries.js";
+
+export async function getJWT(credentials) {
+    try {
+        const response = await fetch("https://01.gritlab.ax/api/auth/signin", {
+            method: "POST",
+            headers: {
+                "Authorization": `Basic ${credentials}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            return [true, data];
+        } else {
+            return [false, data.error];
+        }
+    } catch (error) {
+        return [false, error];
+    }
+}
+
+// Check that the stored jwt is valid
+export async function verifyJWT() {
+    const token = localStorage.getItem("gritlabGraphQLjwt");
+    if (!token) return false;
+
+    try {
+        const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ query: verifyQuery })
+        });
+        return res.ok;
+    } catch (error) {
+        console.error("Login request failed:", error);
+        loginErrorMessage.textContent = "Login not allowed from this location";
+        return false;
+    }
+}
 
 export function getUserIdFromJWT() {
     const token = localStorage.getItem("gritlabGraphQLjwt");
@@ -86,7 +128,7 @@ export async function getReceivedAuditData(usrId) {
     let groupSizes = await Promise.all(
         groups.map(async (group) => {
             if (unfinishedGroups.includes(group.groupId)) return null;
-            const data = await runQuery(groupMembersQuery[0] + group.groupId +groupMembersQuery[1]);
+            const data = await runQuery(groupMembersQuery[0] + group.groupId + groupMembersQuery[1]);
             const layer1 = data[Object.keys(data)[0]];
             const members = layer1[Object.keys(layer1)[0]]['members'];
             return members.length;
@@ -97,14 +139,11 @@ export async function getReceivedAuditData(usrId) {
     const avgGroupSize = groupSizes.reduce((sum, count) => sum + count, 0) / groupSizes.length;
     const avgAuditorAmount = allAuditData.reduce((sum, count) => sum + count, 0) / groupSizes.length;
 
-    //console.log(avgGroupSize, avgAuditorAmount);
-
-    
     return [auditsReceived, avgGroupSize, avgAuditorAmount, groupSizes.length];
 }
 
 export async function getGraphData(usrId) {
-    const data = await runQuery(xpFromTransactionQuery[0] + usrId +xpFromTransactionQuery[1]);
+    const data = await runQuery(xpFromTransactionQuery[0] + usrId + xpFromTransactionQuery[1]);
 
     const xp = [];
     data.transaction.forEach(ta => {
@@ -119,8 +158,8 @@ export async function getGraphData(usrId) {
     return xp;
 }
 
-export async function getSkillsData(){
+export async function getSkillsData() {
     const data = await runQuery(skillsFromTransactionsQuery);
-    const skills = data.user[0].skills.sort((a,b) => b.amount - a.amount)
+    const skills = data.user[0].skills.sort((a, b) => b.amount - a.amount)
     return skills;
 }

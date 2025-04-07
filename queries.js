@@ -1,3 +1,5 @@
+export const verifyQuery = `{ user { id }}`  // 'normal' query (not nested, no arguments)
+
 export const userInfoQuery = `
 {
   user {

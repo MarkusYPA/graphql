@@ -1,6 +1,5 @@
 import { roundToOneSignificantNumber } from "./calculations.js";
-import { getDoneAuditData, getGraphData, getReceivedAuditData, getSkillsData, getUserData, getUserIdFromJWT } from "./data.js";
-import { barChartContainer, infoBox, lineChartContainer, numberOfColumns } from "./main.js";
+import { barChartContainer, infoBox, lineChartContainer, loginSection, logoutButton, numberOfColumns, usernameDisplay } from "./controller.js";
 
 
 export function setColumnHeights(grow) {
@@ -24,12 +23,35 @@ export function setColumnHeights(grow) {
     }
 }
 
+export function loggedInView(username){
+    usernameDisplay.textContent = `Logged in as ${username}`;
+    logoutButton.hidden = false;
+    loginSection.style.display = "none";
 
-export async function fillUserInfo() {
-    const userId = getUserIdFromJWT();
-    const person = await getUserData();
-    const personDoneAudits = await getDoneAuditData(userId);
-    const auditData = await getReceivedAuditData(userId);
+    infoBox.style.display = "flex";
+    lineChartContainer.style.display = "flex";
+    barChartContainer.style.display = "flex";
+
+    setColumnHeights(false);
+}
+
+export function notLoggedInView(){
+    usernameDisplay.textContent = '';
+    logoutButton.hidden = true;
+    loginSection.style.display = 'flex';
+    infoBox.innerHTML = '';
+    lineChartContainer.innerHTML = '';
+    barChartContainer.innerHTML = '';
+
+    infoBox.style.display = "none";
+    lineChartContainer.style.display = "none";
+    barChartContainer.style.display = "none";
+
+    setColumnHeights(true);
+}
+
+export async function fillUserInfo(person, personDoneAudits, auditData) {
+
     const personReceivedAudits = auditData[0];
 
     // container for personal info and audits
@@ -188,9 +210,7 @@ export async function fillUserInfo() {
 }
 
 
-export async function xpGraph() {
-    const userId = getUserIdFromJWT();
-    const graphData = await getGraphData(userId);
+export async function xpGraph(graphData) {
 
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
@@ -375,9 +395,7 @@ export async function xpGraph() {
     lineChartContainer.appendChild(chartInfoContainer);
 }
 
-export async function skillsGraph() {
-    const skills = await getSkillsData();
-
+export async function skillsGraph(skills) {
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
     chartInfoContainer.classList.add('chart-info-container');
