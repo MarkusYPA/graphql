@@ -1,0 +1,87 @@
+html.stark {
+    background-color: var(--bg2st);
+}
+
+body.stark {
+    background-color: var(--bg1st);
+}
+
+input.stark {
+    border-radius: 0;
+}
+
+.column.stark {
+    background-color: var(--bg2st);
+}
+
+#login-error-message.stark,
+#content-error-message.stark {
+    color: var(--text2st);
+}
+
+header.stark {
+    background: var(--bg2st);
+    color: var(--text1st);
+}
+
+button.stark {
+    background: var(--btn1st);
+    color: var(--text1st);
+    border: none;
+    border-radius: 0px;
+}
+
+button.stark:hover {
+    background: var(--btn2st);
+}
+
+.user-info.stark {
+    border-width: 0;
+    border-radius: 0;
+    border-color: var(--brdrst);
+
+    color: var(--text3st);
+    background-color: var(--bg3st);
+    box-shadow: 1rem 1rem var(--shdwst);
+}
+
+h3.stark {
+    /* Slab Serif font stack */
+    font-family: Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif;
+}
+
+.key-text.stark {
+    color: var(--text4st);
+}
+
+.chart.stark {
+    background-color: var(--bg3st);
+}
+
+.data-tick.stark {
+    stroke: var(--btn2st);
+}
+
+.grid-line.stark {
+    stroke: var(--glinest);
+}
+
+.chart-line.stark {
+    stroke: var(--btn1st);
+}
+
+.axis-line.stark {
+    stroke: var(--text3);
+}
+
+.axis-tick.stark {
+    stroke: var(--text3);
+}
+
+.background-bar.stark {
+    fill: var(--bg4st);
+}
+
+.foreground-bar.stark {
+    fill: var(--btn1st);
+}

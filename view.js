@@ -2,6 +2,40 @@ import { roundToOneSignificantNumber } from "./calculations.js";
 import { barChartContainer, infoBox, lineChartContainer, loginSection, logoutButton, numberOfColumns, usernameDisplay } from "./controller.js";
 
 
+export function setMode(toStark) {
+    const starkSelectors = [
+        'html',
+        'body',
+        'header',
+        'h3',
+        'button',
+        'input',
+        '.column',
+        '.user-info',
+        '.key-text',
+        '.chart',
+        '.data-tick',
+        '.grid-line',
+        '.chart-line',
+        '.axis-line',
+        '.axis-tick',
+        '.background-bar',
+        '.foreground-bar',
+        '#login-error-message',
+        '#content-error-message',
+        '#logout-button',
+        '#mode-button'
+    ];
+
+    // Select all matching elements
+    const starkElements = document.querySelectorAll(starkSelectors.join(','));
+
+    if (toStark)
+        starkElements.forEach(el => el.classList.add('stark'));
+    else
+        starkElements.forEach(el => el.classList.remove('stark'));
+}
+
 export function setColumnHeights(grow) {
     const colContainer = document.querySelector('#login-columns');
     const oldColumns = Array.from(document.getElementsByClassName('column'));

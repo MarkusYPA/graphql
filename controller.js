@@ -1,5 +1,5 @@
 import { getDoneAuditData, getGraphData, getJWT, getReceivedAuditData, getSkillsData, getUserData, getUserIdFromJWT, verifyJWT } from "./model.js";
-import { fillUserInfo, loggedInView, notLoggedInView, setColumnHeights, skillsGraph, xpGraph } from "./view.js";
+import { fillUserInfo, loggedInView, notLoggedInView, setColumnHeights, setMode, skillsGraph, xpGraph } from "./view.js";
 
 let loginErrorMessage;
 export let contentErrorMessage;
@@ -9,6 +9,8 @@ export let logoutButton;
 export let infoBox;
 export let lineChartContainer;
 export let barChartContainer;
+let modeButton;
+export let isStark = false;
 
 export const numberOfColumns = 25;
 
@@ -27,6 +29,7 @@ async function loadContent() {
     fillUserInfo(person, personDoneAudits, auditData);
     xpGraph(graphData);
     skillsGraph(skills);
+    setMode(isStark);
 }
 
 function updateUI() {
@@ -74,6 +77,7 @@ addEventListener("DOMContentLoaded", async function () {
     loginSection = document.getElementById('login-section')
     usernameDisplay = document.getElementById("username-display");
     logoutButton = document.getElementById("logout-button");
+    modeButton = document.getElementById("mode-button");
     contentErrorMessage = document.getElementById('content-error-message');
     infoBox = document.querySelector('#personal-info');
     lineChartContainer = document.querySelector('#line-chart');
@@ -81,6 +85,10 @@ addEventListener("DOMContentLoaded", async function () {
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
+    modeButton.addEventListener("click", toggleMode);
+
+    isStark = localStorage.getItem('theme') === 'stark';
+    setMode(isStark)
 
     if (await verifyJWT()) { // Check login state on page load
         updateUI();
@@ -89,3 +97,13 @@ addEventListener("DOMContentLoaded", async function () {
         notLoggedInView();
     }
 })
+
+function toggleMode() {
+    if (isStark) {
+        localStorage.setItem('theme', 'mild');
+    } else {
+        localStorage.setItem('theme', 'stark');
+    }
+    isStark = !isStark;
+    setMode(isStark);
+}

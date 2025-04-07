@@ -1,17 +1,36 @@
+@import "starkmode.css";
+
 /* Pseudo-class for variables */
 :root {
-    --bg1: #e6eec9;
-    --bg2: #949494;
-    --bg3: #dfddd3;
-    --bg4: #ffffff6f;
-    --text1: #fff;
-    --text2: #cb0000;
-    --text3: #000;
-    --text4: #626262;
-    --btn1: #c77e00;
-    --btn2: #860000;
-    --brdr: #ffffff;
-    --gline: rgb(174, 174, 174);
+    /* default colors */
+    --bg1: #e6eec9;     /* body */
+    --bg2: #949494;     /* header */
+    --bg3: #dfddd3;     /* boxes */
+    --bg4: #ffffff6f;   /* ghost columns */
+    --text1: #fff;      /* button, login, header */
+    --text2: #cb0000;   /* error */
+    --text3: #000;      /* majority of text */
+    --text4: #626262;   /* info keys */
+    --btn1: #c77e00;    /* button bg, graph line and columns */
+    --btn2: #860000;    /* button hover, graph ticks */
+    --brdr: #ffffff;    /* border */
+    --gline: #9f9f9f;   /* horizontal lines on graph */
+    --shdw: #5e5e5e3b;  /* drop shadow */
+
+    /* stark mode colors */
+    --bg1st: #e5e5e5;
+    --bg2st: #606060;
+    --bg3st: #ffffff;
+    --bg4st: #58585820;
+    --text1st: #fff;
+    --text2st: #ff7c7c;
+    --text3st: #2a2a2a;
+    --text4st: #626262;
+    --btn1st: #5ea4a2;
+    --btn2st: #386160;
+    --brdrst: #ea00ff;
+    --glinest: #9f9f9f;
+    --shdwst: #00000028;
 }
 
 html {
@@ -26,6 +45,14 @@ body {
 
     /* Classical Humanist font stack */
     font-family: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
+}
+
+input {
+    border-width: 0;
+    padding: 0.4rem;
+    width: 14rem;
+
+    border-radius: 0.5rem;
 }
 
 #login-columns {
@@ -78,7 +105,7 @@ header {
     gap: 10px;
 }
 
-#logout-button {
+button {
     background: var(--btn1);
     color: var(--text1);
     border: none;
@@ -96,7 +123,7 @@ header {
     flex-direction: column;
     align-items: flex-start;
     padding: 7rem 2rem;
-    gap: 2rem;
+    gap: 3rem;
 
     max-width: 100%;
     overflow-x: auto;
@@ -115,10 +142,13 @@ header {
 
     color: var(--text3);
     background-color: var(--bg3);
+    box-shadow: 1.5rem 1.5rem 1rem var(--shdw);
 }
 
 h3 {
     margin: 0;
+    padding-left: 1rem;
+    /* Antique font stack */
     font-family: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
 }
 
