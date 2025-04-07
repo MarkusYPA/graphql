@@ -1,5 +1,5 @@
 import { getDoneAuditData, getGraphData, getJWT, getReceivedAuditData, getSkillsData, getUserData, getUserIdFromJWT, verifyJWT } from "./model.js";
-import { fillUserInfo, loggedInView, notLoggedInView, setColumnHeights, setMode, skillsGraph, xpGraph } from "./view.js";
+import { fillUserInfo, loggedInView, notLoggedInView, setColumnHeights, setMode, skillsGraph, xpGraph } from "./view/view.js";
 
 let loginErrorMessage;
 export let contentErrorMessage;

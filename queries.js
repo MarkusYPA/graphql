@@ -1,5 +1,9 @@
-export const verifyQuery = `{ user { id }}`  // 'normal' query (not nested, no arguments)
 
+// 'normal' query: no nesting, no arguments
+export const verifyQuery = `{ user { id }}`
+
+
+// query with nesting
 export const userInfoQuery = `
 {
   user {
@@ -11,14 +15,13 @@ export const userInfoQuery = `
     auditRatio
     totalUp
     totalDown
-    xps(order_by: {event: {createdAt: desc}}) {
+    xps {
       amount
       path
     }
       attrs
   }
 }`
-
 
 export const auditsDoneQuery = [`
 {
@@ -51,6 +54,7 @@ export const groupMembersQuery = [`
   }
 }`]
 
+// query with arguments
 export const xpFromTransactionQuery = [`
 {
   transaction(
@@ -76,53 +80,3 @@ export const skillsFromTransactionsQuery = `
     }
   }
 }`
-
-
-
-
-
-export const introspectionQuery = `
-{
-  __schema {
-    types {
-            name
-            kind
-      fields {
-                name
-            }
-        }
-    }
-} `
-
-export const transactions2 = [`
-{
-    transaction(
-        where: {
-        _and: [
-            { userId: { _eq: `, ` } },
-            { type: { _eq: "xp" } }
-        ]
-    }
-    order_by: { createdAt: desc }
-    ) {
-        amount
-    }
-} `]
-
-export const transaction_aggregate = [`
-{
-    transaction_aggregate(
-        where: {
-        _and: [
-            { userId: { _eq: `, ` } },
-            { type: { _eq: "xp" } }
-        ]
-    }
-    ) {
-    aggregate {
-      sum {
-                amount
-            }
-        }
-    }
-} `]

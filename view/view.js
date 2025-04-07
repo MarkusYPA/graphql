@@ -1,5 +1,5 @@
-import { roundToOneSignificantNumber } from "./calculations.js";
-import { barChartContainer, infoBox, lineChartContainer, loginSection, logoutButton, numberOfColumns, usernameDisplay } from "./controller.js";
+import { roundToOneSignificantNumber } from "../calculations.js";
+import { barChartContainer, infoBox, lineChartContainer, loginSection, logoutButton, numberOfColumns, usernameDisplay } from "../controller.js";
 
 
 export function setMode(toStark) {

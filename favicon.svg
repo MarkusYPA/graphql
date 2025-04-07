@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   sodipodi:docname="pie.svg"
+   sodipodi:docname="bars.svg"
    inkscape:export-filename="pie.png"
    inkscape:export-xdpi="68.950432"
    inkscape:export-ydpi="68.950432"
@@ -27,11 +27,11 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="2.4441213"
-     inkscape:cx="77.942122"
-     inkscape:cy="56.052864"
-     inkscape:window-width="1960"
+     inkscape:cx="112.3103"
+     inkscape:cy="89.193609"
+     inkscape:window-width="1472"
      inkscape:window-height="1119"
-     inkscape:window-x="0"
+     inkscape:window-x="774"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1"
@@ -43,15 +43,47 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-74.096769,-74.709135)">
-    <circle
-       style="fill:#bfbf40;fill-opacity:1;stroke-width:10;stroke-linejoin:bevel"
-       id="path1"
-       cx="97.673195"
-       cy="98.285568"
-       r="23.576288" />
-    <path
-       id="circle2"
-       style="fill:#206060;fill-opacity:1;stroke-width:10;stroke-linejoin:bevel"
-       d="M 97.673108,74.709135 A 23.576288,23.576288 0 0 0 74.096769,98.285474 23.576288,23.576288 0 0 0 97.673108,121.86181 23.576288,23.576288 0 0 0 121.24945,98.285474 23.576288,23.576288 0 0 0 118.96638,88.166711 L 97.673108,98.285474 Z" />
+    <rect
+       style="fill:#808080;fill-opacity:0.2;stroke-width:11.7224;stroke-linejoin:bevel"
+       id="rect11"
+       width="12.562926"
+       height="47.152702"
+       x="74.625938"
+       y="74.709137" />
+    <rect
+       style="fill:#808080;fill-opacity:0.2;stroke-width:11.7224;stroke-linejoin:bevel"
+       id="rect10"
+       width="12.562926"
+       height="47.152702"
+       x="108.12708"
+       y="74.709152" />
+    <rect
+       style="fill:#808080;fill-opacity:0.2;stroke-width:11.7224;stroke-linejoin:bevel"
+       id="rect9"
+       width="12.562926"
+       height="47.152702"
+       x="91.376503"
+       y="74.709145" />
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:10.4413;stroke-linejoin:bevel"
+       id="rect5"
+       width="12.562926"
+       height="37.409935"
+       x="74.625938"
+       y="84.451904" />
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:7.65941;stroke-linejoin:bevel"
+       id="rect6"
+       width="12.562926"
+       height="20.13089"
+       x="91.376503"
+       y="101.73096" />
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:6.18865;stroke-linejoin:bevel"
+       id="rect8"
+       width="12.562926"
+       height="13.142089"
+       x="108.12708"
+       y="108.71976" />
   </g>
 </svg>

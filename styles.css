@@ -114,7 +114,7 @@ button {
     border-radius: 5px;
 }
 
-#logout-button:hover {
+button:hover {
     background: var(--btn2);
 }
 
