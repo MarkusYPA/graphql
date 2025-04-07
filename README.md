@@ -57,6 +57,6 @@ Then
 - Auth method: **Basic Auth** (base64-encoded `username:password` or `email:password`)
 - GraphQL queries use Bearer token headers:  
 
-## Author
+## 🧑‍💻️ Author
 
 - [Markus Amberla](https://github.com/MarkusYPA)
