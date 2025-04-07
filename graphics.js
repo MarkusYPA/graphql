@@ -265,7 +265,7 @@ export async function xpGraph() {
     xAxisLine.setAttribute("y1", svgHeight - padding);
     xAxisLine.setAttribute("x2", svgWidth - padding);
     xAxisLine.setAttribute("y2", svgHeight - padding);
-    xAxisLine.setAttribute("stroke", "black");
+    xAxisLine.classList.add('axis-line');
     svg.appendChild(xAxisLine);
 
     const yAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -273,7 +273,7 @@ export async function xpGraph() {
     yAxisLine.setAttribute("y1", svgHeight - padding);
     yAxisLine.setAttribute("x2", leftPadding);
     yAxisLine.setAttribute("y2", padding);
-    yAxisLine.setAttribute("stroke", "black");
+    yAxisLine.classList.add('axis-line');
     svg.appendChild(yAxisLine);
 
 
@@ -302,7 +302,7 @@ export async function xpGraph() {
             tick.setAttribute("y1", svgHeight - padding);
             tick.setAttribute("x2", x);
             tick.setAttribute("y2", svgHeight - padding + 5);
-            tick.setAttribute("stroke", "black");
+            tick.classList.add('axis-tick');
             svg.appendChild(tick);
 
             // Label
@@ -325,7 +325,7 @@ export async function xpGraph() {
             tick.setAttribute("y1", y);
             tick.setAttribute("x2", leftPadding);
             tick.setAttribute("y2", y);
-            tick.setAttribute("stroke", "black");
+            tick.classList.add('axis-tick');
             svg.appendChild(tick);
 
             // Grid line
@@ -334,7 +334,7 @@ export async function xpGraph() {
             gridLine.setAttribute("y1", y);
             gridLine.setAttribute("x2", svgWidth - padding);
             gridLine.setAttribute("y2", y);
-            gridLine.setAttribute("stroke", "grey");
+            gridLine.classList.add('grid-line');
             svg.appendChild(gridLine);
 
             // Label
@@ -443,7 +443,6 @@ export async function skillsGraph() {
         const yLocation = svgHeight - bottomPadding * 0.7;
         xLabel.setAttribute("y", yLocation);
         xLabel.setAttribute("text-anchor", "end");
-        xLabel.setAttribute("font-size", "10");
         xLabel.setAttribute("transform", `rotate(-45 ${x + barWidth / 2} ${yLocation})`);
         xLabel.textContent = skillLabel;
         xLabel.classList.add("axis-label");
@@ -456,7 +455,7 @@ export async function skillsGraph() {
     xAxisLine.setAttribute("y1", svgHeight - bottomPadding);
     xAxisLine.setAttribute("x2", svgWidth - padding);
     xAxisLine.setAttribute("y2", svgHeight - bottomPadding);
-    xAxisLine.setAttribute("stroke", "black");
+    xAxisLine.classList.add('axis-line');
     svg.appendChild(xAxisLine);
 
     const yAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -464,7 +463,7 @@ export async function skillsGraph() {
     yAxisLine.setAttribute("y1", svgHeight - bottomPadding);
     yAxisLine.setAttribute("x2", leftPadding - barGap);
     yAxisLine.setAttribute("y2", padding);
-    yAxisLine.setAttribute("stroke", "black");
+    yAxisLine.classList.add('axis-line');
     svg.appendChild(yAxisLine);
 
     // Y-axis ticks
@@ -477,7 +476,7 @@ export async function skillsGraph() {
         tick.setAttribute("x2", leftPadding - barGap);
         tick.setAttribute("y1", y);
         tick.setAttribute("y2", y);
-        tick.setAttribute("stroke", "#333");
+        tick.classList.add('axis-tick');
         svg.appendChild(tick);
 
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -488,16 +487,6 @@ export async function skillsGraph() {
         label.textContent = `${value}%`;
         svg.appendChild(label);
     }
-
-    // Y Axis label
-/*     const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    yAxisLabel.setAttribute("x", 30);
-    yAxisLabel.setAttribute("y", svgHeight / 2);
-    yAxisLabel.setAttribute("text-anchor", "middle");
-    yAxisLabel.classList.add("axis-label");
-    yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
-    yAxisLabel.textContent = "Skill Level";
-    svg.appendChild(yAxisLabel); */
 
     chartInfoContainer.appendChild(svg);
     barChartContainer.appendChild(chartInfoContainer);

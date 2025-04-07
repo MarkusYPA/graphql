@@ -11,6 +11,7 @@
     --btn1: #c77e00;
     --btn2: #860000;
     --brdr: #ffffff;
+    --gline: rgb(174, 174, 174);
 }
 
 html {
@@ -181,6 +182,14 @@ h4 {
     /* removes inline spacing */
     font-weight: normal;
 }
+.data-tick {
+    stroke: var(--btn2);
+    stroke-width: 2;
+}
+
+.grid-line {
+    stroke: var(--gline);
+}
 
 .chart-line {
     stroke: var(--btn1);
@@ -188,9 +197,14 @@ h4 {
     stroke-width: 2;
 }
 
-.data-tick {
-    stroke: var(--btn2);
-    stroke-width: 2;
+.axis-line {
+    stroke: var(--text3);
+    stroke-width: 1;
+}
+
+.axis-tick {
+    stroke: var(--text3);
+    stroke-width: 1;
 }
 
 .tick-label {
