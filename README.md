@@ -7,7 +7,7 @@ A web-based profile page powered by GraphQL that displays personal school statis
 The goal of this project is to learn and work with the GraphQL query language by creating a personal profile UI, complete with statistics and visualizations.
 
 - 🔒 Includes a working **login system** using Basic Authentication to retrieve a JWT token
-- 📊 Displays **ata points** about the authenticated user
+- 📊 Displays **data points** about the authenticated user
 - 📈 Contains **two SVG-based statistical graphs** using real data
 - ☁️ Hosted online (GitHub Pages)
 
@@ -39,10 +39,15 @@ The goal of this project is to learn and work with the GraphQL query language by
 
 ## 🚀 Getting Started
 
-1. Clone the repository or download the files  
-2. Serve `index.html` with a static file host (e.g. Pyhton or VS Code Live Server)
-3. Log in with your GritLab credentials  
-4. Explore your personal data and stats
+- Navigate to https://markusypa.github.io/graphql/
+
+Or
+- Clone the repository or download the files  
+- Serve `index.html` with a static file host (e.g. Pyhton or VS Code Live Server)
+
+Then  
+- Log in with your GritLab credentials  
+- Explore your personal data and stats
 
 
 ## 🛡️ Authentication Details
