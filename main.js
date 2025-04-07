@@ -131,8 +131,10 @@ addEventListener("DOMContentLoaded", async function () {
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
+    
 
-    notLoggedInView();
-
-    if (await verifyJWT()) updateUI(); // Check login state on page load
+    if (await verifyJWT()) // Check login state on page load
+        updateUI();
+    else
+        notLoggedInView();
 })

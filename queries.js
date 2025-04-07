@@ -13,6 +13,7 @@ export const userInfoQuery = `
       amount
       path
     }
+      attrs
   }
 }`
 

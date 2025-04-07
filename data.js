@@ -100,7 +100,7 @@ export async function getReceivedAuditData(usrId) {
     //console.log(avgGroupSize, avgAuditorAmount);
 
     
-    return [auditsReceived, avgGroupSize, avgAuditorAmount];
+    return [auditsReceived, avgGroupSize, avgAuditorAmount, groupSizes.length];
 }
 
 export async function getGraphData(usrId) {

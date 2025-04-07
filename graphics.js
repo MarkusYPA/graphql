@@ -32,8 +32,6 @@ export async function fillUserInfo() {
     const auditData = await getReceivedAuditData(userId);
     const personReceivedAudits = auditData[0];
 
-    //const infoBox = document.querySelector('#personal-info');
-
     // container for personal info and audits
     const personInfoContainer = document.createElement('div');
     personInfoContainer.id = 'person-info-container';
@@ -48,6 +46,13 @@ export async function fillUserInfo() {
 
 
     // first info grid with id, username and xp
+    const PIContainer = document.createElement('div');
+    PIContainer.classList.add('title-and-grid-container');
+
+    const PITitle = document.createElement('h4');
+    PITitle.textContent = 'User Info';
+    PIContainer.appendChild(PITitle);
+
     const personalInfo = document.createElement('div');
     personalInfo.id = 'personal-info';
     personalInfo.classList.add('key-value-info');
@@ -59,12 +64,16 @@ export async function fillUserInfo() {
     const key3 = document.createElement('span');
     const val3 = document.createElement('span');
 
+    key1.classList.add('key-text');
+    key2.classList.add('key-text');
+    key3.classList.add('key-text');
+
     key1.textContent = 'id number:';
     val1.textContent = person.id;
     key2.textContent = 'username:';
     val2.textContent = person.login;
-    key3.textContent = 'experience points:';
-    val3.textContent = person.totalXP;
+    key3.textContent = 't shirt size:';
+    val3.textContent = person.attrs.tshirtSize;
 
     personalInfo.appendChild(key1);
     personalInfo.appendChild(val1);
@@ -73,9 +82,51 @@ export async function fillUserInfo() {
     personalInfo.appendChild(key3);
     personalInfo.appendChild(val3);
 
-    gridsContainer.appendChild(personalInfo);
+    PIContainer.appendChild(personalInfo);
+    gridsContainer.appendChild(PIContainer);
 
     // second info grid about audits
+    const ProContainer = document.createElement('div');
+    ProContainer.classList.add('title-and-grid-container');
+
+    const ProTitle = document.createElement('h4');
+    ProTitle.textContent = 'Projects Info';
+    ProContainer.appendChild(ProTitle);
+
+    const xpInfo = document.createElement('div');
+    xpInfo.id = 'audit-info';
+    xpInfo.classList.add('key-value-info');
+
+    const xpkey1 = document.createElement('span');
+    const xpval1 = document.createElement('span');
+    const xpkey2 = document.createElement('span');
+    const xpval2 = document.createElement('span');
+
+    xpkey1.classList.add('key-text');
+    xpkey2.classList.add('key-text');
+
+    xpkey1.textContent = 'experience points:';
+    xpval1.textContent = person.totalXP;
+    xpkey2.textContent = 'projects completed:';
+    xpval2.textContent = auditData[3];
+
+    xpInfo.appendChild(xpkey1);
+    xpInfo.appendChild(xpval1);
+    xpInfo.appendChild(xpkey2);
+    xpInfo.appendChild(xpval2);
+
+    ProContainer.appendChild(xpInfo);
+    gridsContainer.appendChild(ProContainer);
+
+
+    // third info grid about audits
+    const AudContainer = document.createElement('div');
+    AudContainer.classList.add('title-and-grid-container');
+
+    const AudTitle = document.createElement('h4');
+    AudTitle.textContent = 'Audits Info';
+    AudContainer.appendChild(AudTitle);
+
     const auditInfo = document.createElement('div');
     auditInfo.id = 'audit-info';
     auditInfo.classList.add('key-value-info');
@@ -92,6 +143,13 @@ export async function fillUserInfo() {
     const auditval5 = document.createElement('span');
     const auditkey6 = document.createElement('span');
     const auditval6 = document.createElement('span');
+
+    auditkey1.classList.add('key-text');
+    auditkey2.classList.add('key-text');
+    auditkey3.classList.add('key-text');
+    auditkey4.classList.add('key-text');
+    auditkey5.classList.add('key-text');
+    auditkey6.classList.add('key-text');
 
     auditkey1.textContent = 'audits done:';
     auditval1.textContent = personDoneAudits;
@@ -120,7 +178,8 @@ export async function fillUserInfo() {
     auditInfo.appendChild(auditkey6);
     auditInfo.appendChild(auditval6);
 
-    gridsContainer.appendChild(auditInfo);
+    AudContainer.appendChild(auditInfo);
+    gridsContainer.appendChild(AudContainer);
 
 
     // add grids to container
@@ -132,9 +191,6 @@ export async function fillUserInfo() {
 export async function xpGraph() {
     const userId = getUserIdFromJWT();
     const graphData = await getGraphData(userId);
-
-    // container for chart (deals with borders)
-    //const chartContainer = document.querySelector('#line-chart');
 
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
@@ -148,7 +204,7 @@ export async function xpGraph() {
 
     //const svgWidth = dataContainer.clientWidth || 800;
     const padding = 40;
-    const leftPadding = 90; // more room for y label
+    const leftPadding = 100; // more room for y label
     const svgWidth = 800;
     const svgHeight = 400;
 
@@ -319,9 +375,6 @@ export async function xpGraph() {
 export async function skillsGraph() {
     const skills = await getSkillsData();
 
-    // container for chart (deals with borders)
-    //const chartContainer = document.querySelector('#bar-chart');
-
     // container for chart info (deals with layout)
     const chartInfoContainer = document.createElement('div');
     chartInfoContainer.classList.add('chart-info-container');
@@ -335,13 +388,10 @@ export async function skillsGraph() {
     const svgWidth = 800;
     const svgHeight = 400;
     const padding = 40;
-    const leftPadding = 90; // more room for y label
-    const bottomPadding = 90; // more room for y label
-
-    const r = 2; // bar-to-gap width ratio
-    const gaps = skills.length - 1;
-    const barGap = svgWidth / (gaps * r + gaps + r);    // formula for gap width
-    const barWidth = barGap * r;
+    const leftPadding = 70;
+    const bottomPadding = 90; // more room for labels
+    const barWidth = ((svgWidth - padding - leftPadding) / skills.length) * (3 / 4);
+    const barGap = ((svgWidth - padding - leftPadding) / skills.length) * (1 / 4);
 
     const chartHeight = svgHeight - (padding + bottomPadding);
     const maxAmount = 100;
@@ -404,7 +454,7 @@ export async function skillsGraph() {
     const xAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     xAxisLine.setAttribute("x1", leftPadding - barGap);
     xAxisLine.setAttribute("y1", svgHeight - bottomPadding);
-    xAxisLine.setAttribute("x2", svgWidth - padding + barWidth + barGap);
+    xAxisLine.setAttribute("x2", svgWidth - padding);
     xAxisLine.setAttribute("y2", svgHeight - bottomPadding);
     xAxisLine.setAttribute("stroke", "black");
     svg.appendChild(xAxisLine);
@@ -440,14 +490,14 @@ export async function skillsGraph() {
     }
 
     // Y Axis label
-    const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+/*     const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
     yAxisLabel.setAttribute("x", 30);
     yAxisLabel.setAttribute("y", svgHeight / 2);
     yAxisLabel.setAttribute("text-anchor", "middle");
-    yAxisLabel.setAttribute("font-size", "12");
+    yAxisLabel.classList.add("axis-label");
     yAxisLabel.setAttribute("transform", `rotate(-90 15 ${svgHeight / 2})`);
-    yAxisLabel.textContent = "Skill Level (%)";
-    svg.appendChild(yAxisLabel);
+    yAxisLabel.textContent = "Skill Level";
+    svg.appendChild(yAxisLabel); */
 
     chartInfoContainer.appendChild(svg);
     barChartContainer.appendChild(chartInfoContainer);
