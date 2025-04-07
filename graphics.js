@@ -282,14 +282,17 @@ export async function xpGraph() {
         const numTicks = 5;
         const xTickValues = [];
         const yTickValues = [];
-        const roundedMax = roundToOneSignificantNumber(maxAmount);
+        const yTickStep = roundToOneSignificantNumber(maxAmount / 5);
 
         for (let i = 0; i <= numTicks; i++) {
             const t = minTime + ((maxTime - minTime) / numTicks) * i;
             xTickValues.push(new Date(t));
+        }
 
-            const a = minAmount + ((roundedMax - minAmount) / numTicks) * i;
-            yTickValues.push(a);
+        let newYTick = 0;
+        while (newYTick <= maxAmount - yTickStep) {
+            newYTick += yTickStep;
+            yTickValues.push(newYTick);            
         }
 
         // X-axis ticks & labels
