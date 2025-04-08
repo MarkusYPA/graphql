@@ -39,7 +39,7 @@ export function setColumnHeights(grow) {
 
     let height = '0vh'
     for (let i = 0; i < numberOfColumns; i++) {
-        if (grow) height = (Math.random() * 15 + 60) + 'vh';
+        if (grow) height = (Math.random() * 15 + 70) + 'vh';
 
         let col;
         if (oldColumns.length != numberOfColumns) {

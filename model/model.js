@@ -17,13 +17,13 @@ export async function getJWT(credentials) {
             return [false, data.error];
         }
     } catch (error) {
-        return [false, error];
+        return [false, "Login not allowed from this location"];
     }
 }
 
 // Check that the stored jwt is valid
 export async function verifyJWT() {
-    const token = localStorage.getItem("gritlabGraphQLjwt");
+    const token = localStorage.getItem("jwt");
     if (!token) return false;
 
     try {
@@ -44,7 +44,7 @@ export async function verifyJWT() {
 }
 
 export function getUserIdFromJWT() {
-    const token = localStorage.getItem("gritlabGraphQLjwt");
+    const token = localStorage.getItem("jwt");
     if (!token) return null;
 
     // jwt parts separated by dots: 0 header, 1 payload, 2 signature - Decode payload:
@@ -53,7 +53,7 @@ export function getUserIdFromJWT() {
 }
 
 async function runQuery(queryArg) {
-    const token = localStorage.getItem("gritlabGraphQLjwt");
+    const token = localStorage.getItem("jwt");
 
     try {
         const res = await fetch("https://01.gritlab.ax/api/graphql-engine/v1/graphql", {

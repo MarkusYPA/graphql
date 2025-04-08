@@ -41,8 +41,8 @@ async function loadContent() {
 
 function updateUI() {
     contentErrorMessage.textContent = '';
-    const token = localStorage.getItem("gritlabGraphQLjwt");
-    const username = localStorage.getItem("gritlabGraphQLusername");
+    const token = localStorage.getItem("jwt");
+    const username = localStorage.getItem("username");
 
     if (token && username) {
         loggedInView(username);
@@ -60,8 +60,8 @@ async function logIn(e) {
     const [success, result] = await getJWT(credentials);
 
     if (success) {
-        localStorage.setItem("gritlabGraphQLjwt", result);  // Store JWT for future requests
-        localStorage.setItem("gritlabGraphQLusername", nameOrEmail); // Store username for display
+        localStorage.setItem("jwt", result);  // Store JWT for future requests
+        localStorage.setItem("username", nameOrEmail); // Store username for display
         loginErrorMessage.textContent = '';
         console.log("Login successful");
         updateUI();
@@ -73,8 +73,8 @@ async function logIn(e) {
 }
 
 function logout() {
-    localStorage.removeItem("gritlabGraphQLjwt");
-    localStorage.removeItem("gritlabGraphQLusername");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("username");
     updateUI();
     console.log("Logged out");
 }
