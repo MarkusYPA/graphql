@@ -214,10 +214,22 @@ export async function fillUserInfo(person, personDoneAudits, auditData) {
     auditkey4.textContent = 'avg group size:';
     auditval4.textContent = Math.round(auditData[1] * 100) / 100;
     auditkey5.textContent = 'avg num of auditors:';
-    auditval5.textContent = Math.round(auditData[2] * 100) / 100;
-    auditkey6.textContent = 'audit activity ratio:';
-    const aar = (personDoneAudits / auditData[1]) / (personReceivedAudits / auditData[2]);
+    auditval5.textContent = Math.round(auditData[2] * 100) / 100;    
+    auditkey6.textContent = 'audit activity ratio*:';
+    const aar = (personDoneAudits / auditData[4]) / (personReceivedAudits / auditData[2]);
     auditval6.textContent = Math.round(aar * 100) / 100;
+
+    const audKey6Explain1 = document.createElement('div');
+    audKey6Explain1.classList.add('key-text');
+    audKey6Explain1.setAttribute('style', 'white-space: pre;');
+    audKey6Explain1.style.fontSize = 'small';
+    audKey6Explain1.textContent = '*( done / avg. num of auditees) /\r\n';
+    audKey6Explain1.textContent += "( received / avg. group size )";
+
+    const audKey6Explain2 = document.createElement('div');
+    audKey6Explain2.classList.add('key-text');
+    audKey6Explain2.style.fontSize = 'small';
+    audKey6Explain2.textContent = '( received / avg. group size )';
 
     auditInfo.appendChild(auditkey1);
     auditInfo.appendChild(auditval1);
@@ -233,6 +245,9 @@ export async function fillUserInfo(person, personDoneAudits, auditData) {
     auditInfo.appendChild(auditval6);
 
     AudContainer.appendChild(auditInfo);
+    AudContainer.appendChild(audKey6Explain1);
+    //AudContainer.appendChild(audKey6Explain2);
+
     gridsContainer.appendChild(AudContainer);
 
 

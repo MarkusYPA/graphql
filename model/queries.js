@@ -21,6 +21,19 @@ export const userInfoQuery = `
   }
 }`
 
+export const allXpQuery = [`
+{
+  transaction_aggregate(
+    where: {_and: [{type: {_eq: "xp"}}, {eventId: {_eq: 104}}]}
+  ) {
+    aggregate {
+      sum {
+        amount
+      }
+    }
+  }
+}`]
+
 export const auditsDoneQuery = [`
 {
   audit(where: {_and: [{auditorId: {_eq: `, `}}, {auditedAt: {_is_null: false}}]}) {
@@ -44,13 +57,31 @@ export const auditsForGroupQuery = [`
 }`]
 
 export const groupMembersQuery = [`
-{
-  group(where: {id: {_eq: `, `}}) {
-    members {
-      userId
+  {
+  group(where: {id: {_eq: `,`}}) {
+    members_aggregate {
+      aggregate {
+        count
+      }
     }
   }
 }`]
+
+export const auditedGroupSizesQuery= `
+{
+  user {
+    audits(where: {auditedAt: {_is_null: false}}) {
+      group {
+        members_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }
+  }
+}`
+
 
 // query with arguments
 export const xpFromTransactionQuery = [`

@@ -1,5 +1,5 @@
 import { contentErrorMessage } from "../controller.js";
-import { auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, verifyQuery, xpFromTransactionQuery } from "./queries.js";
+import { auditedGroupSizesQuery, auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, verifyQuery, xpFromTransactionQuery } from "./queries.js";
 
 export async function getJWT(credentials) {
     try {
@@ -121,25 +121,27 @@ export async function getReceivedAuditData(usrId) {
             if (theseAudits.length == 0) unfinishedGroups.push(group.groupId);
             return theseAudits.length;
         })
-    );
+    );    
 
-    const auditsReceived = allAuditData.reduce((sum, count) => sum + count, 0);
-
-    let groupSizes = await Promise.all(
+    let ownGroupSizes = await Promise.all(
         groups.map(async (group) => {
             if (unfinishedGroups.includes(group.groupId)) return null;
             const data = await runQuery(groupMembersQuery[0] + group.groupId + groupMembersQuery[1]);
-            const layer1 = data[Object.keys(data)[0]];
-            const members = layer1[Object.keys(layer1)[0]]['members'];
-            return members.length;
+            return data.group[0].members_aggregate.aggregate.count;
         })
     );
-    groupSizes = groupSizes.filter((size) => size !== null);
+    ownGroupSizes = ownGroupSizes.filter((size) => size !== null);
 
-    const avgGroupSize = groupSizes.reduce((sum, count) => sum + count, 0) / groupSizes.length;
-    const avgAuditorAmount = allAuditData.reduce((sum, count) => sum + count, 0) / groupSizes.length;
+    const auditedGroupSizes = await runQuery(auditedGroupSizesQuery);    
+    let auditedGroups = auditedGroupSizes.user[0].audits;
+    auditedGroups = auditedGroups.map((gr)=> gr.group.members_aggregate.aggregate.count)
 
-    return [auditsReceived, avgGroupSize, avgAuditorAmount, groupSizes.length];
+    const auditsReceived = allAuditData.reduce((sum, count) => sum + count, 0);
+    const avgOwnGroupSize = ownGroupSizes.reduce((sum, count) => sum + count, 0) / ownGroupSizes.length;
+    const avgAuditorAmount = allAuditData.reduce((sum, count) => sum + count, 0) / ownGroupSizes.length;
+    const avgAuditeesAmount = auditedGroups.reduce((sum, count) => sum + count, 0) / auditedGroups.length;
+
+    return [auditsReceived, avgOwnGroupSize, avgAuditorAmount, ownGroupSizes.length, avgAuditeesAmount];
 }
 
 export async function getGraphData(usrId) {

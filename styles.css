@@ -159,6 +159,7 @@ h4 {
 
 .key-text{
     color: var(--text4);
+    font-weight: normal;
 }
 
 .key-value-title {
