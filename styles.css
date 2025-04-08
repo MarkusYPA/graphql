@@ -7,6 +7,7 @@
     --bg2: #949494;     /* header */
     --bg3: #dfddd3;     /* boxes */
     --bg4: #ffffff6f;   /* ghost columns */
+    --bg5: #000000a0;       /* tooltip */
     --text1: #fff;      /* button, login, header */
     --text2: #cb0000;   /* error */
     --text3: #000;      /* majority of text */
@@ -212,9 +213,12 @@ h4 {
     /* removes inline spacing */
     font-weight: normal;
 }
+
 .data-tick {
-    stroke: var(--btn2);
-    stroke-width: 2;
+/*     stroke: var(--btn2);
+    stroke-width: 2; */
+    fill: var(--btn2);
+    cursor: pointer;
 }
 
 .grid-line {
@@ -251,4 +255,15 @@ h4 {
 
 .foreground-bar {
     fill: var(--btn1);
+}
+
+#tooltip {
+    display: none;
+    background-color: var(--bg5);
+    color: var(--text1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.3rem;
+    font-size: small;
+    position: absolute;
+    white-space: nowrap;
 }

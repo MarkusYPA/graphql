@@ -29,7 +29,7 @@ export async function xpGraph(graphData) {
     const amountsAcc = amountsSeparate.map((_, i) => amountsSeparate.slice(0, i + 1).reduce((sum, curr) => sum + curr));
 
     const minTime = Math.min(...times);
-    const maxTime = Math.max(...times);
+    const maxTime = Date.now();
     const minAmount = 0;
     const maxAmount = Math.max(...amountsAcc);
 
@@ -40,35 +40,67 @@ export async function xpGraph(graphData) {
         svgHeight - padding - ((amount - minAmount) / (maxAmount - minAmount)) * (svgHeight - 2 * padding);
 
 
+    // Draw these first so graph goes over lines
+    drawTicksAndLabels();
+
+    // determine points of graph line
     let points = [];
     for (let i = 0; i < graphData.length; i++) {
+        // Point where xp was awarded
         const x = xScale(times[i]);
         const y = yScale(amountsAcc[i]);
         points.push(`${x},${y}`);
+
+        // Second point to extend line horizontally
+        let xFlat = 0;
+        if (i + 1 < graphData.length) {
+            xFlat = xScale(times[i + 1]);
+        } else {
+            xFlat = xScale(Date.now());
+        }
+        points.push(`${xFlat},${y}`);
     }
 
+    // Create graph line
     const pathData = "M " + points.join(" L ");
-
-    drawTicksAndLabels();
-
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.classList.add("chart-line");
     path.setAttribute("d", pathData);
     svg.appendChild(path);
 
-    for (let i = 0; i < graphData.length; i++) {
-        const x = xScale(times[i]);
-        const y = yScale(amountsAcc[i]);
-        points.push(`${x},${y}`);
 
-        const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        tick.setAttribute("x1", x);
-        tick.setAttribute("y1", y - 6);
-        tick.setAttribute("x2", x);
-        tick.setAttribute("y2", y);
-        tick.classList.add("data-tick");
-        svg.appendChild(tick);
+    const tooltip = document.getElementById("tooltip");
+
+    // make little circles at xp points
+    for (let i = 0; i < graphData.length; i++) {
+        const cx = xScale(times[i]);
+        const cy = yScale(amountsAcc[i]);
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", cx);
+        circle.setAttribute("cy", cy);
+        circle.setAttribute("r", 2.5); // radius
+        circle.classList.add('data-tick');
+
+        circle.addEventListener("mouseover", e => {
+            tooltip.style.display = "block";
+            //tooltip.style.opacity = "1";
+            tooltip.innerText = graphData[i].project;
+        });
+
+        circle.addEventListener("mousemove", e => {
+            tooltip.style.left = e.pageX - 25 + "px";
+            tooltip.style.top = e.pageY - 35 + "px";
+        });
+
+        circle.addEventListener("mouseleave", () => {
+            tooltip.style.display = "none";
+            //tooltip.style.opacity = "0";
+        });
+
+        svg.appendChild(circle);
     }
+
 
     // Axis lines
     const xAxisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -103,7 +135,7 @@ export async function xpGraph(graphData) {
         let newYTick = 0;
         while (newYTick <= maxAmount - yTickStep) {
             newYTick += yTickStep;
-            yTickValues.push(newYTick);            
+            yTickValues.push(newYTick);
         }
 
         // X-axis ticks & labels
@@ -122,10 +154,10 @@ export async function xpGraph(graphData) {
             // Label
             const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
             label.setAttribute("x", x);
-            label.setAttribute("y", svgHeight - padding + 20);
+            label.setAttribute("y", svgHeight - padding + 27);
             label.setAttribute("text-anchor", "middle");
             label.classList.add("tick-label");
-            label.textContent = date.toLocaleDateString("sv-SE"); // or "en-GB", etc.
+            label.textContent = date.toLocaleDateString("fi-FI");
             svg.appendChild(label);
         });
 
@@ -157,19 +189,19 @@ export async function xpGraph(graphData) {
             label.setAttribute("y", y + 4);
             label.setAttribute("text-anchor", "end");
             label.classList.add("tick-label");
-            label.textContent = amount.toLocaleString(); // e.g. 1,000
+            label.textContent = amount.toLocaleString('fi-FI'); // spaces every three digits
             svg.appendChild(label);
         });
 
 
         // X-axis label
-        const xAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        xAxisLabel.setAttribute("x", svgWidth / 2);
-        xAxisLabel.setAttribute("y", svgHeight);
-        xAxisLabel.setAttribute("text-anchor", "middle");
-        xAxisLabel.classList.add("axis-label");
-        xAxisLabel.textContent = "Date";
-        svg.appendChild(xAxisLabel);
+        /*         const xAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                xAxisLabel.setAttribute("x", svgWidth / 2);
+                xAxisLabel.setAttribute("y", svgHeight);
+                xAxisLabel.setAttribute("text-anchor", "middle");
+                xAxisLabel.classList.add("axis-label");
+                xAxisLabel.textContent = "Date";
+                svg.appendChild(xAxisLabel); */
 
         // Y-axis label
         const yAxisLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");

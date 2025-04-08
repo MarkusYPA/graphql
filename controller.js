@@ -18,9 +18,8 @@ async function loadContent() {
     const userId = getUserIdFromJWT();
 
     // Get the data to be displayed
-    let results;
     try {
-        results = await Promise.all([
+        var userDataPoints = await Promise.all([
             getUserData(),
             getDoneAuditData(userId),
             getReceivedAuditData(userId),
@@ -32,7 +31,7 @@ async function loadContent() {
         return;
     }
 
-    const [person, personDoneAudits, auditData, graphData, skills] = results;
+    const [person, personDoneAudits, auditData, graphData, skills] = userDataPoints;
     fillUserInfo(person, personDoneAudits, auditData);
     xpGraph(graphData);
     skillsGraph(skills);

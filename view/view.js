@@ -22,7 +22,8 @@ export function setMode() {
         '#login-error-message',
         '#content-error-message',
         '#logout-button',
-        '#mode-button'
+        '#mode-button',
+        '#tooltip'
     ];
 
     const modeElements = document.querySelectorAll(modeElementSelectors.join(','));

@@ -59,7 +59,8 @@ h3.stark {
 }
 
 .data-tick.stark {
-    stroke: var(--btn2st);
+    /* stroke: var(--btn2st); */
+    fill: var(--btn2st);
 }
 
 .grid-line.stark {
@@ -84,4 +85,8 @@ h3.stark {
 
 .foreground-bar.stark {
     fill: var(--btn1st);
+}
+
+#tooltip.stark {
+    border-radius: 0;
 }

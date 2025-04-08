@@ -150,9 +150,10 @@ export async function getGraphData(usrId) {
         if (
             (!ta.path.includes('piscine-go') && !ta.path.includes('piscine-js')) ||
             ta.path.endsWith('piscine-js')
-        ) {
+        ) {            
             const time = new Date(ta.createdAt).getTime()
-            xp.push({ 'amount': ta.amount, 'awarded': time })
+            const project = String(ta.path).split(`/`).pop();
+            xp.push({ 'amount': ta.amount, 'awarded': time, 'project': project})
         }
     });
     return xp;
