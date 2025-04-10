@@ -1,4 +1,4 @@
-import { contentErrorMessage } from "../controller.js";
+import { contentErrorMessage, loginErrorMessage } from "../controller.js";
 import { auditedGroupSizesQuery, auditsDoneQuery, auditsForGroupQuery, groupIdsQuery, groupMembersQuery, skillsFromTransactionsQuery, userInfoQuery, verifyQuery, xpFromTransactionQuery } from "./queries.js";
 
 export async function getJWT(credentials) {
@@ -23,6 +23,8 @@ export async function getJWT(credentials) {
 
 // Check that the stored jwt is valid
 export async function verifyJWT() {
+    console.log("verifying jwt");
+
     const token = localStorage.getItem("jwt");
     if (!token) return false;
 
@@ -35,6 +37,15 @@ export async function verifyJWT() {
             },
             body: JSON.stringify({ query: verifyQuery })
         });
+        const data = await res.json();
+        if (data.errors) {
+            console.error("Error verifying jwt:", data.errors[0].message);
+            loginErrorMessage.textContent = data.errors[0].message;
+            return false;
+        }
+
+        console.log("data in verifyJwt:", data)
+
         return res.ok;
     } catch (error) {
         console.error("Login request failed:", error);

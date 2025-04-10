@@ -2,7 +2,7 @@ import { getDoneAuditData, getGraphData, getJWT, getReceivedAuditData, getSkills
 import { skillsGraph, xpGraph } from "./view/svgs.js";
 import { fillUserInfo, loggedInView, notLoggedInView, setMode } from "./view/view.js";
 
-let loginErrorMessage;
+export let loginErrorMessage;
 export let contentErrorMessage;
 export let loginSection;
 export let usernameDisplay;
@@ -94,6 +94,8 @@ addEventListener("DOMContentLoaded", async function () {
     modeButton.addEventListener("click", toggleMode);
     
     setMode()
+
+    console.log("here1");
 
     if (await verifyJWT()) { // Check login state on page load
         updateUI();
