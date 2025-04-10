@@ -28,10 +28,12 @@ export function setMode() {
 
     const modeElements = document.querySelectorAll(modeElementSelectors.join(','));
 
-    if (localStorage.getItem('theme') === 'stark')
+    if (localStorage.getItem('theme') === 'stark') {
         modeElements.forEach(el => el.classList.add('stark'));
-    else
+    }
+    else {
         modeElements.forEach(el => el.classList.remove('stark'));
+    }
 }
 
 export function setColumnHeights(grow) {
@@ -55,7 +57,7 @@ export function setColumnHeights(grow) {
     }
 }
 
-export function loggedInView(username){
+export function loggedInView(username) {
     usernameDisplay.textContent = `Logged in as ${username}`;
     logoutButton.hidden = false;
     loginSection.style.display = "none";
@@ -67,7 +69,7 @@ export function loggedInView(username){
     setColumnHeights(false);
 }
 
-export function notLoggedInView(){
+export function notLoggedInView() {
     usernameDisplay.textContent = '';
     logoutButton.hidden = true;
     loginSection.style.display = 'flex';
@@ -214,7 +216,7 @@ export async function fillUserInfo(person, personDoneAudits, auditData) {
     auditkey4.textContent = 'avg group size:';
     auditval4.textContent = Math.round(auditData[1] * 100) / 100;
     auditkey5.textContent = 'avg num of auditors:';
-    auditval5.textContent = Math.round(auditData[2] * 100) / 100;    
+    auditval5.textContent = Math.round(auditData[2] * 100) / 100;
     auditkey6.textContent = 'audit activity ratio*:';
     const aar = (personDoneAudits / auditData[4]) / (personReceivedAudits / auditData[2]);
     auditval6.textContent = Math.round(aar * 100) / 100;

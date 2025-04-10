@@ -91,9 +91,7 @@ addEventListener("DOMContentLoaded", async function () {
 
     loginSection.addEventListener('submit', logIn);
     logoutButton.addEventListener("click", logout);
-    modeButton.addEventListener("click", toggleMode);
-    
-    setMode()
+    modeButton.addEventListener("click", toggleMode);     
 
     if (await verifyJWT()) { // Check login state on page load
         updateUI();
@@ -101,6 +99,8 @@ addEventListener("DOMContentLoaded", async function () {
     } else {
         notLoggedInView();
     }
+
+    setMode()
 })
 
 function toggleMode() {
