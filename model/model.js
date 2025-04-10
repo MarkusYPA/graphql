@@ -23,8 +23,6 @@ export async function getJWT(credentials) {
 
 // Check that the stored jwt is valid
 export async function verifyJWT() {
-    console.log("verifying jwt");
-
     const token = localStorage.getItem("jwt");
     if (!token) return false;
 
@@ -43,8 +41,6 @@ export async function verifyJWT() {
             loginErrorMessage.textContent = data.errors[0].message;
             return false;
         }
-
-        console.log("data in verifyJwt:", data)
 
         return res.ok;
     } catch (error) {

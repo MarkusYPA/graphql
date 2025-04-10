@@ -95,8 +95,6 @@ addEventListener("DOMContentLoaded", async function () {
     
     setMode()
 
-    console.log("here1");
-
     if (await verifyJWT()) { // Check login state on page load
         updateUI();
         loadContent();
